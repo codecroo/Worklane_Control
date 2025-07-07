@@ -1,10 +1,10 @@
-import BG from "../assets/bg.png"
-import Slide from "../components/layout/Slide"
-import Footer from "../components/Footer"
-import Navbar from "../components/Navbar"
-import { Card, CardHeader, CardDescription, CardTitle } from "../components/ui/Card"
+import BG from "../assets/bg.png";
+import Slide from "../components/layout/Slide";
+import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
+import { Card, CardHeader, CardDescription, CardTitle } from "../components/ui/Card";
 import { motion } from "framer-motion";
-import Badge from "../components/ui/Badge"
+import Badge from "../components/ui/Badge";
 import {
     Briefcase, Radar, FileImage,
     Megaphone,
@@ -25,7 +25,8 @@ const LandinPage = () => {
                     {/* Scrollable Content */}
                     <div className="relative z-10">
                         {/* Slide 1 - Hero */}
-                        <Slide id="home"
+                        <Slide
+                            id="home"
                             text="Built for Modern Teams"
                             sub="Worklane Control will handle your management and marketing chaos — with zero overhead."
                         >
@@ -35,14 +36,14 @@ const LandinPage = () => {
                             </Badge>
                         </Slide>
 
-                        {/* Slide 2 - Team & Media */}
+                        {/* Slide 2 - Features */}
                         <Slide id="features">
                             <div className="w-full max-w-6xl mx-auto px-4">
                                 <motion.h2
                                     initial={{ opacity: 0, y: 30 }}
                                     whileInView={{ opacity: 1, y: 0 }}
                                     transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-                                    className="text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-6"
+                                    className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-6 text-center md:text-left"
                                 >
                                     Built to Replace Your Stack
                                 </motion.h2>
@@ -51,12 +52,12 @@ const LandinPage = () => {
                                     initial={{ opacity: 0, y: 30 }}
                                     whileInView={{ opacity: 1, y: 0 }}
                                     transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-                                    className="text-lg md:text-xl text-white/70 max-w-2xl mb-14"
+                                    className="text-base sm:text-lg md:text-xl text-white/70 max-w-2xl mb-14 mx-auto md:mx-0 text-center md:text-left"
                                 >
                                     Worklane Control gives you everything — from deadline tracking to automated marketing — all under one dashboard.
                                 </motion.p>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-8">
                                     {/* Team & Project */}
                                     <motion.div
                                         initial={{ opacity: 0, x: -80 }}
@@ -66,7 +67,7 @@ const LandinPage = () => {
                                     >
                                         <div className="flex items-center gap-3 mb-4">
                                             <Briefcase className="w-6 h-6 text-blue-300" />
-                                            <h3 className="text-xl font-semibold text-white">Team & Project</h3>
+                                            <h3 className="text-lg md:text-xl font-semibold text-white">Team & Project</h3>
                                         </div>
                                         <ul className="space-y-3 text-white/80 text-left text-sm font-medium">
                                             <li>• Project Tracking</li>
@@ -85,7 +86,7 @@ const LandinPage = () => {
                                     >
                                         <div className="flex items-center gap-3 mb-4">
                                             <Megaphone className="w-6 h-6 text-pink-300" />
-                                            <h3 className="text-xl font-semibold text-white">Media</h3>
+                                            <h3 className="text-lg md:text-xl font-semibold text-white">Media</h3>
                                         </div>
                                         <ul className="space-y-3 text-left text-white/80 text-sm font-medium">
                                             <li>• AI Poster Generation</li>
@@ -98,7 +99,7 @@ const LandinPage = () => {
                             </div>
                         </Slide>
 
-                        {/* Slide 3 - Problem > Solution */}
+                        {/* Slide 3 - Problem/Solution */}
                         <Slide id="benefits">
                             <div className="w-full max-w-6xl mx-auto px-4 flex flex-col gap-24">
                                 {[
@@ -123,7 +124,7 @@ const LandinPage = () => {
                                     return (
                                         <div
                                             key={i}
-                                            className={`grid md:grid-cols-2 gap-10 items-start md:items-center`}
+                                            className="grid md:grid-cols-2 gap-10 items-start md:items-center"
                                         >
                                             {/* Problem */}
                                             <motion.div
@@ -131,8 +132,7 @@ const LandinPage = () => {
                                                 whileInView={{ opacity: 1, x: 0 }}
                                                 viewport={{ once: false, amount: 0.5 }}
                                                 transition={{ duration: 0.7, delay: i * 0.2, ease: [0.22, 1, 0.36, 1] }}
-                                                className={`text-white/80 text-base md:text-lg font-medium leading-relaxed ${isEven ? "text-left md:order-1" : "text-right md:order-2"
-                                                    }`}
+                                                className={`text-white/80 text-base sm:text-lg font-medium leading-relaxed ${isEven ? "text-left md:order-1" : "text-right md:order-2"}`}
                                             >
                                                 <span className="inline-block bg-white/10 text-white/70 px-4 py-2 rounded-lg border border-white/10 shadow-sm">
                                                     ❌ {item.problem}
@@ -151,7 +151,7 @@ const LandinPage = () => {
                                                         <div className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10">
                                                             {item.solution.icon}
                                                         </div>
-                                                        <CardTitle className="text-white text-sm">{item.solution.title}</CardTitle>
+                                                        <CardTitle className="text-white text-sm md:text-base">{item.solution.title}</CardTitle>
                                                     </CardHeader>
                                                     <CardDescription className="text-white/70 text-sm mt-1 pl-1 leading-normal">
                                                         {item.solution.desc}
@@ -165,8 +165,12 @@ const LandinPage = () => {
                         </Slide>
                     </div>
                 </div>
+
             </main>
-            <Footer />
+            <footer className="w-full bg-[#0a0a0a] text-white">
+                <Footer />
+            </footer>
+
         </>
     );
 };

@@ -10,7 +10,7 @@ const Button = ({
     ...props
 }) => {
     const base =
-        "inline-flex items-center justify-center font-medium rounded-md cursor-pointer select-none backdrop-blur-md border transition-all duration-200 ease-in-out active:scale-[0.97] focus:outline-none";
+        "inline-flex items-center justify-center font-medium rounded-md cursor-pointer select-none backdrop-blur-md border transition-all duration-200 ease-in-out active:scale-[0.97] focus:outline-none whitespace-nowrap";
 
     const variants = {
         primary:
@@ -22,10 +22,10 @@ const Button = ({
     };
 
     const sizes = {
-        default: "px-5 py-2.5 text-sm",
-        sm: "px-4 py-2 text-sm",
-        lg: "px-6 py-3 text-base",
-        icon: "p-3",
+        default: "px-5 py-2.5 text-sm sm:px-6 sm:py-3",
+        sm: "px-4 py-2 text-xs sm:text-sm",
+        lg: "px-6 py-3 text-base sm:text-lg",
+        icon: "p-3 sm:p-3.5",
     };
 
     const variantClass = variants[variant] || variants.primary;

@@ -1,25 +1,82 @@
 @import "tailwindcss";
 
+/* === Smooth Scroll and Overflow Fix === */
+html,
+body {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern";
+  font-variant-ligatures: none;
+}
 
+/* === Hide Scrollbar Globally When Needed === */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
 
 .hide-scrollbar {
   -ms-overflow-style: none;
+  /* Edge */
   scrollbar-width: none;
+  /* Firefox */
 }
 
+/* === Button Hover Cursor === */
 button:hover {
   cursor: pointer;
 }
 
-html,
-body {
-  scroll-behavior: smooth;
+/* === Focus Ring Reset === */
+*:focus:not(:focus-visible) {
+  outline: none;
 }
 
-/* 
-*:hover{
-  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.774);
-} */
+/* === Universal Tap Highlight Disable (Mobile) === */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* === Global Selection Color === */
+::selection {
+  background-color: rgba(59, 130, 246, 0.3);
+  /* Tailwind blue-500/30 */
+  color: white;
+}
+
+/* === Reduced Motion Support (Accessibility) === */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* === Optional: Prevent Image Drag Ghosting === */
+img {
+  user-select: none;
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+}
+
+/* === Responsive Typography Helpers === */
+.responsive-text {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+}
+
+.responsive-heading {
+  font-size: clamp(1.5rem, 5vw, 3rem);
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* === Optional Debug Mode (Comment to Enable) === */
+/*
+*:hover {
+  outline: 1px dashed rgba(255, 255, 255, 0.1);
+}
+*/

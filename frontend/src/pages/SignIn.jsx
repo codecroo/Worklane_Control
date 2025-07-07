@@ -31,21 +31,25 @@ const SignIn = () => {
         setTimeout(() => {
             setLoading(false);
             console.log("Signed in:", { email, password });
-            navigate("/"); // Redirect after login
+            navigate("/");
         }, 1000);
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-slate-900 to-black text-white px-4">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-slate-900 to-black text-white px-4 py-8">
             <form
                 onSubmit={handleSubmit}
-                className="bg-white/5 backdrop-blur-md border border-white/10 shadow-xl rounded-2xl p-8 w-full max-w-md space-y-6"
+                className="bg-white/5 backdrop-blur-md border border-white/10 shadow-xl rounded-2xl w-full max-w-sm sm:max-w-md md:max-w-lg space-y-6 p-6 sm:p-8"
             >
                 {/* Heading */}
-                <div>
-                    <h2 className="text-2xl font-bold text-white">Welcome Back 👋</h2>
-                    <p className="text-white/60 text-sm mt-1">
-                        Sign in to your <span className="text-blue-300 font-medium">Worklane Control</span> dashboard
+                <div className="space-y-1">
+                    <h2 className="text-2xl sm:text-3xl font-bold text-white">
+                        Welcome Back 👋
+                    </h2>
+                    <p className="text-white/60 text-sm sm:text-base">
+                        Sign in to your{" "}
+                        <span className="text-blue-300 font-medium">Worklane Control</span>{" "}
+                        dashboard
                     </p>
                 </div>
 
@@ -54,7 +58,7 @@ const SignIn = () => {
                     <label className="text-white/70 text-sm font-medium">Email</label>
                     <input
                         type="email"
-                        className="w-full px-4 py-2 bg-white/10 border border-white/10 rounded-md text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-2.5 bg-white/10 border border-white/10 rounded-md text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                         placeholder="you@example.com"
                         autoComplete="email"
                         value={email}
@@ -67,14 +71,14 @@ const SignIn = () => {
                     <label className="text-white/70 text-sm font-medium">Password</label>
                     <input
                         type={showPassword ? "text" : "password"}
-                        className="w-full px-4 py-2 bg-white/10 border border-white/10 rounded-md text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-2.5 bg-white/10 border border-white/10 rounded-md text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                         placeholder="••••••••"
                         autoComplete="current-password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
                     <div
-                        className="absolute right-3 top-9 text-white/50 cursor-pointer"
+                        className="absolute right-3 top-[45px] text-white/50 cursor-pointer"
                         onClick={() => setShowPassword(!showPassword)}
                     >
                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -82,14 +86,16 @@ const SignIn = () => {
                 </div>
 
                 {/* Error Message */}
-                {error && <div className="text-red-400 text-sm">{error}</div>}
+                {error && (
+                    <div className="text-red-400 text-sm sm:text-base">{error}</div>
+                )}
 
                 {/* Submit Button */}
                 <Button
                     type="submit"
                     variant="primary"
                     disabled={loading}
-                    className="w-full hover:to-purple-600 text-white font-semibold py-2.5 rounded-md transition-all duration-300 disabled:opacity-50"
+                    className="w-full py-2.5 sm:py-3 text-sm sm:text-base font-semibold rounded-md transition-all duration-300 disabled:opacity-50"
                 >
                     {loading ? "Signing In..." : "Sign In"}
                 </Button>
@@ -97,13 +103,13 @@ const SignIn = () => {
                 {/* Sign Up Link */}
                 <p className="text-center text-sm text-white/60">
                     Don’t have an account?{" "}
-                    <Link to="/SignUp" className="text-blue-300 hover:underline">
+                    <Link to="/signup" className="text-blue-300 hover:underline">
                         Sign up
                     </Link>
                 </p>
 
                 {/* Back to Home Link */}
-                <div className="text-center mt-4">
+                <div className="text-center mt-3">
                     <Link
                         to="/"
                         className="inline-block text-sm text-white/60 hover:text-blue-300 transition duration-200"
