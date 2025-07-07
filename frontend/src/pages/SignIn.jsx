@@ -1,0 +1,119 @@
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import Button from "../components/ui/Button";
+
+const SignIn = () => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const navigate = useNavigate();
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setError("");
+
+        if (!email || !password) {
+            setError("Please fill in all fields.");
+            return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setError("Please enter a valid email address.");
+            return;
+        }
+
+        setLoading(true);
+        setTimeout(() => {
+            setLoading(false);
+            console.log("Signed in:", { email, password });
+            navigate("/"); // Redirect after login
+        }, 1000);
+    };
+
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-slate-900 to-black text-white px-4">
+            <form
+                onSubmit={handleSubmit}
+                className="bg-white/5 backdrop-blur-md border border-white/10 shadow-xl rounded-2xl p-8 w-full max-w-md space-y-6"
+            >
+                {/* Heading */}
+                <div>
+                    <h2 className="text-2xl font-bold text-white">Welcome Back 👋</h2>
+                    <p className="text-white/60 text-sm mt-1">
+                        Sign in to your <span className="text-blue-300 font-medium">Worklane Control</span> dashboard
+                    </p>
+                </div>
+
+                {/* Email */}
+                <div className="space-y-2">
+                    <label className="text-white/70 text-sm font-medium">Email</label>
+                    <input
+                        type="email"
+                        className="w-full px-4 py-2 bg-white/10 border border-white/10 rounded-md text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="you@example.com"
+                        autoComplete="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                </div>
+
+                {/* Password */}
+                <div className="space-y-2 relative">
+                    <label className="text-white/70 text-sm font-medium">Password</label>
+                    <input
+                        type={showPassword ? "text" : "password"}
+                        className="w-full px-4 py-2 bg-white/10 border border-white/10 rounded-md text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="••••••••"
+                        autoComplete="current-password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <div
+                        className="absolute right-3 top-9 text-white/50 cursor-pointer"
+                        onClick={() => setShowPassword(!showPassword)}
+                    >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </div>
+                </div>
+
+                {/* Error Message */}
+                {error && <div className="text-red-400 text-sm">{error}</div>}
+
+                {/* Submit Button */}
+                <Button
+                    type="submit"
+                    variant="primary"
+                    disabled={loading}
+                    className="w-full hover:to-purple-600 text-white font-semibold py-2.5 rounded-md transition-all duration-300 disabled:opacity-50"
+                >
+                    {loading ? "Signing In..." : "Sign In"}
+                </Button>
+
+                {/* Sign Up Link */}
+                <p className="text-center text-sm text-white/60">
+                    Don’t have an account?{" "}
+                    <Link to="/SignUp" className="text-blue-300 hover:underline">
+                        Sign up
+                    </Link>
+                </p>
+
+                {/* Back to Home Link */}
+                <div className="text-center mt-4">
+                    <Link
+                        to="/"
+                        className="inline-block text-sm text-white/60 hover:text-blue-300 transition duration-200"
+                    >
+                        ← Back to Home
+                    </Link>
+                </div>
+            </form>
+        </div>
+    );
+};
+
+export default SignIn;
