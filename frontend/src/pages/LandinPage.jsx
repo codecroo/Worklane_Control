@@ -19,7 +19,12 @@ const LandinPage = () => {
                 <div className="scroll-smooth relative w-full bg-black text-white">
                     {/* Background */}
                     <div className="fixed inset-0 z-0">
-                        <img src={BG} alt="bg" className="w-full h-full object-cover opacity-30" />
+                        <img
+                            src={BG}
+                            alt="bg"
+                            loading="lazy"
+                            className="w-full h-full object-cover opacity-30"
+                        />
                     </div>
 
                     {/* Scrollable Content */}
@@ -42,6 +47,7 @@ const LandinPage = () => {
                                 <motion.h2
                                     initial={{ opacity: 0, y: 30 }}
                                     whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
                                     transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
                                     className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-6 text-center md:text-left"
                                 >
@@ -51,6 +57,7 @@ const LandinPage = () => {
                                 <motion.p
                                     initial={{ opacity: 0, y: 30 }}
                                     whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
                                     transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
                                     className="text-base sm:text-lg md:text-xl text-white/70 max-w-2xl mb-14 mx-auto md:mx-0 text-center md:text-left"
                                 >
@@ -62,6 +69,7 @@ const LandinPage = () => {
                                     <motion.div
                                         initial={{ opacity: 0, x: -80 }}
                                         whileInView={{ opacity: 1, x: 0 }}
+                                        viewport={{ once: true }}
                                         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                                         className="p-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.4)] hover:shadow-[0_10px_40px_rgba(0,0,0,0.6)] hover:-translate-y-1 transition-all"
                                     >
@@ -79,6 +87,7 @@ const LandinPage = () => {
 
                                     {/* Media */}
                                     <motion.div
+                                        viewport={{ once: true }}
                                         initial={{ opacity: 0, x: 80 }}
                                         whileInView={{ opacity: 1, x: 0 }}
                                         transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
@@ -130,7 +139,7 @@ const LandinPage = () => {
                                             <motion.div
                                                 initial={{ opacity: 0, x: isEven ? -70 : 70 }}
                                                 whileInView={{ opacity: 1, x: 0 }}
-                                                viewport={{ once: false, amount: 0.5 }}
+                                                viewport={{ once: true, amount: 0.5 }}
                                                 transition={{ duration: 0.7, delay: i * 0.2, ease: [0.22, 1, 0.36, 1] }}
                                                 className={`text-white/80 text-base sm:text-lg font-medium leading-relaxed ${isEven ? "text-left md:order-1" : "text-right md:order-2"}`}
                                             >
@@ -142,6 +151,7 @@ const LandinPage = () => {
                                             {/* Solution */}
                                             <motion.div
                                                 initial={{ opacity: 0, x: isEven ? 70 : -70, scale: 0.95 }}
+                                                viewport={{ once: true }}
                                                 whileInView={{ opacity: 1, x: 0, scale: 1 }}
                                                 transition={{ duration: 0.7, delay: i * 0.2 + 0.15, ease: [0.22, 1, 0.36, 1] }}
                                                 className={`${isEven ? "md:order-2" : "md:order-1"}`}

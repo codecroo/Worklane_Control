@@ -12,6 +12,7 @@ body {
   font-variant-ligatures: none;
 }
 
+
 /* === Hide Scrollbar Globally When Needed === */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;

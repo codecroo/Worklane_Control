@@ -11,6 +11,7 @@ const Slide = ({ id, text, sub, children }) => {
                 initial={{ opacity: 0, scale: 0.92, filter: "blur(6px)" }}
                 whileInView={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
                 transition={{ duration: 0.7, ease: "easeOut" }}
+                viewport={{ once: true }}
                 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-center tracking-tight drop-shadow-[0_4px_20px_rgba(59,130,246,0.35)]"
             >
                 {text}
@@ -21,6 +22,7 @@ const Slide = ({ id, text, sub, children }) => {
                 initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
                 whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
+                viewport={{ once: true }}
                 className="text-base sm:text-lg md:text-xl mt-6 text-white/70 text-center max-w-xl leading-relaxed"
             >
                 {sub}
@@ -32,6 +34,7 @@ const Slide = ({ id, text, sub, children }) => {
                 whileInView={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
                 transition={{ duration: 0.7, ease: "easeOut" }}
                 className="text-center"
+                viewport={{ once: true }}
             >
                 <div className="mt-12 w-full flex justify-center px-4">
                     {children}
