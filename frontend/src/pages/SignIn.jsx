@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/ui/Button";
+import axios from "axios"
 
 const SignIn = () => {
     const [email, setEmail] = useState("");
@@ -12,7 +13,7 @@ const SignIn = () => {
 
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
 
@@ -28,11 +29,19 @@ const SignIn = () => {
         }
 
         setLoading(true);
-        setTimeout(() => {
-            setLoading(false);
-            console.log("Signed in:", { email, password });
-            navigate("/");
-        }, 1000);
+        // setTimeout(() => {
+            //     console.log("Signed in:", { email, password });
+            //     navigate("/");
+            // }, 1000);
+            
+            try {
+                const Response = await axios.post("http://localhost:8000/userauth/login/", {})
+                console.log(Response.data)
+            } catch (error) {
+                console.error(error.message)
+            }
+                setLoading(false);
+
     };
 
     return (
