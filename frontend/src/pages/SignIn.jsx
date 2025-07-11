@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/ui/Button";
-import axios from "axios"
+import axios from "axios";
 
 const SignIn = () => {
     const [email, setEmail] = useState("");
@@ -17,31 +17,47 @@ const SignIn = () => {
         e.preventDefault();
         setError("");
 
-        if (!email || !password) {
+        const trimmedEmail = email.trim();
+
+        if (!trimmedEmail || !password) {
             setError("Please fill in all fields.");
             return;
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
+        if (!emailRegex.test(trimmedEmail)) {
             setError("Please enter a valid email address.");
             return;
         }
 
-        setLoading(true);
-        // setTimeout(() => {
-            //     console.log("Signed in:", { email, password });
-            //     navigate("/");
-            // }, 1000);
-            
-            try {
-                const Response = await axios.post("http://localhost:8000/userauth/login/", {})
-                console.log(Response.data)
-            } catch (error) {
-                console.error(error.message)
-            }
-                setLoading(false);
+        if (password.length < 6) {
+            setError("Password must be at least 6 characters.");
+            return;
+        }
 
+        try {
+            setLoading(true);
+
+            const response = await axios.post("http://localhost:8000/api/token/", {
+                username: trimmedEmail,
+                password,
+            });
+
+            const { access, refresh } = response.data;
+
+            localStorage.setItem("access_token", access);
+            localStorage.setItem("refresh_token", refresh);
+
+            setLoading(false);
+            navigate("/"); // Redirect to home/dashboard
+        } catch (err) {
+            setLoading(false);
+            if (err.response?.status === 401) {
+                setError("Invalid credentials. Please try again.");
+            } else {
+                setError("Something went wrong. Please try again later.");
+            }
+        }
     };
 
     return (
@@ -67,6 +83,7 @@ const SignIn = () => {
                     <label className="text-white/70 text-sm font-medium">Email</label>
                     <input
                         type="email"
+                        required
                         className="w-full px-4 py-2.5 bg-white/10 border border-white/10 rounded-md text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                         placeholder="you@example.com"
                         autoComplete="email"
@@ -80,6 +97,7 @@ const SignIn = () => {
                     <label className="text-white/70 text-sm font-medium">Password</label>
                     <input
                         type={showPassword ? "text" : "password"}
+                        required
                         className="w-full px-4 py-2.5 bg-white/10 border border-white/10 rounded-md text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                         placeholder="••••••••"
                         autoComplete="current-password"

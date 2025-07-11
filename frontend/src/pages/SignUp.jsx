@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/ui/Button";
+import axios from "axios";
 
 const SignUp = () => {
     const [fullName, setFullName] = useState("");
@@ -11,19 +12,23 @@ const SignUp = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
 
-        if (!fullName || !email || !password || !confirmPassword) {
+        const trimmedName = fullName.trim();
+        const trimmedEmail = email.trim();
+
+        if (!trimmedName || !trimmedEmail || !password || !confirmPassword) {
             setError("Please fill in all fields.");
             return;
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
+        if (!emailRegex.test(trimmedEmail)) {
             setError("Invalid email address.");
             return;
         }
@@ -38,11 +43,24 @@ const SignUp = () => {
             return;
         }
 
-        setLoading(true);
-        setTimeout(() => {
+        try {
+            setLoading(true);
+            const response = await axios.post("http://localhost:8000/api/auth/register/", {
+                username: trimmedEmail,
+                email: trimmedEmail,
+                password,
+            });
+
             setLoading(false);
-            navigate("/");
-        }, 1500);
+            navigate("/signin");
+        } catch (err) {
+            setLoading(false);
+            if (err.response?.data?.username || err.response?.data?.email) {
+                setError("User already exists with this email.");
+            } else {
+                setError("Registration failed. Please try again.");
+            }
+        }
     };
 
     return (
@@ -64,6 +82,7 @@ const SignUp = () => {
                     <label className="text-white/70 text-sm font-medium">Full Name</label>
                     <input
                         type="text"
+                        required
                         className="w-full px-4 py-2.5 bg-white/10 border border-white/10 rounded-md text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                         placeholder="John Doe"
                         value={fullName}
@@ -76,6 +95,7 @@ const SignUp = () => {
                     <label className="text-white/70 text-sm font-medium">Email</label>
                     <input
                         type="email"
+                        required
                         className="w-full px-4 py-2.5 bg-white/10 border border-white/10 rounded-md text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                         placeholder="you@example.com"
                         value={email}
@@ -88,6 +108,7 @@ const SignUp = () => {
                     <label className="text-white/70 text-sm font-medium">Password</label>
                     <input
                         type={showPassword ? "text" : "password"}
+                        required
                         className="w-full px-4 py-2.5 bg-white/10 border border-white/10 rounded-md text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                         placeholder="••••••••"
                         value={password}
@@ -106,6 +127,7 @@ const SignUp = () => {
                     <label className="text-white/70 text-sm font-medium">Confirm Password</label>
                     <input
                         type={showPassword ? "text" : "password"}
+                        required
                         className="w-full px-4 py-2.5 bg-white/10 border border-white/10 rounded-md text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
                         placeholder="••••••••"
                         value={confirmPassword}
