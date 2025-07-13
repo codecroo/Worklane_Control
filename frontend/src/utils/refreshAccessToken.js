@@ -1,10 +1,12 @@
 import axios from "axios";
 
 export const refreshAccessToken = async () => {
+
     const refresh_token = localStorage.getItem("refresh_token");
 
     if (!refresh_token) {
-        throw new Error("No refresh token available");
+        console.warn("No refresh token available");
+        return null;
     }
 
     try {
@@ -19,7 +21,6 @@ export const refreshAccessToken = async () => {
         console.error("Failed to refresh access token:", error);
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
-        window.location.href = "/signin"; // force re-login
-        throw error;
+        return null;
     }
 };

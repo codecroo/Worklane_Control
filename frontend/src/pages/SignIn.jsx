@@ -49,7 +49,9 @@ const SignIn = () => {
             localStorage.setItem("refresh_token", refresh);
 
             setLoading(false);
-            navigate("/"); // Redirect to home/dashboard
+            navigate("/");
+            window.location.reload();
+
         } catch (err) {
             setLoading(false);
             if (err.response?.status === 401) {
