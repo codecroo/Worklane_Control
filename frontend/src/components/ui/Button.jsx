@@ -19,7 +19,10 @@ const Button = ({
             "bg-white/10 text-white border border-white/20 hover:bg-white/20 hover:shadow-[0_4px_14px_rgba(255,255,255,0.2)] active:translate-y-[1px] active:shadow-inner",
         outline:
             "bg-transparent text-white border border-white/30 hover:bg-white/10 hover:shadow-[0_3px_10px_rgba(255,255,255,0.15)] active:translate-y-[1px] active:shadow-inner",
+        danger:
+            "bg-red-500/10 text-red-300 border border-red-500/30 hover:bg-red-500/20 hover:shadow-[0_5px_16px_rgba(239,68,68,0.3)] active:translate-y-[1px] active:shadow-inner",
     };
+
 
     const sizes = {
         default: "px-5 py-2.5 text-sm sm:px-6 sm:py-3",
