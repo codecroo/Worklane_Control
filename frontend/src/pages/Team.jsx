@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Users } from "lucide-react";
 import { typingVariants, fadeIn } from "../animation/variants";
 
@@ -13,6 +13,9 @@ const members = [
     { name: "Meena Kapoor", role: "HR Manager", joined: "Jul 2022" },
     { name: "Devansh Solanki", role: "Business Dev", joined: "Dec 2023" },
 ];
+
+// Define which roles take wider columns
+const wideRoles = ["Marketing Lead", "HR Manager", "Sales Lead"];
 
 const Team = () => {
     const [search, setSearch] = useState("");
@@ -48,34 +51,45 @@ const Team = () => {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="Search team..."
-                    className="bg-white/10 border border-white/20 px-4 py-2 text-sm rounded-md backdrop-blur placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-white/30 transition duration-200"
+                    className="bg-white/10 border border-white/20 px-4 py-2 text-sm rounded-md backdrop-blur placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-300"
                 />
             </motion.div>
 
-            {/* Grid */}
+            {/* Grid with role-based column span */}
             <motion.div
                 variants={fadeIn}
                 initial="hidden"
                 animate="visible"
-                className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-6"
+                className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-6"
             >
-                {filtered.map((member, i) => (
-                    <div
-                        key={i}
-                        className="bg-white/10 p-5 rounded-xl border border-white/10 backdrop-blur-md transition-transform hover:scale-[1.01] duration-300"
-                    >
-                        <div className="flex items-center gap-3 mb-3">
-                            <div className="bg-white/10 p-2 rounded-full">
-                                <Users className="w-5 h-5 text-white" />
-                            </div>
-                            <div>
-                                <h3 className="font-semibold">{member.name}</h3>
-                                <p className="text-sm text-gray-400">{member.role}</p>
-                            </div>
-                        </div>
-                        <p className="text-xs text-gray-500">Joined: {member.joined}</p>
-                    </div>
-                ))}
+                <AnimatePresence>
+                    {filtered.map((member, i) => {
+                        const isWide = wideRoles.includes(member.role);
+
+                        return (
+                            <motion.div
+                                key={member.name}
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.95 }}
+                                transition={{ duration: 0.2, ease: "easeInOut" }}
+                                className={`bg-white/10 p-5 rounded-xl border border-white/10 backdrop-blur-md transition-transform duration-300 hover:scale-[1.01] ${isWide ? "md:col-span-2" : ""
+                                    }`}
+                            >
+                                <div className="flex items-center gap-3 mb-3">
+                                    <div className="bg-white/10 p-2 rounded-full">
+                                        <Users className="w-5 h-5 text-white" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-semibold">{member.name}</h3>
+                                        <p className="text-sm text-gray-400">{member.role}</p>
+                                    </div>
+                                </div>
+                                <p className="text-xs text-gray-500">Joined: {member.joined}</p>
+                            </motion.div>
+                        );
+                    })}
+                </AnimatePresence>
             </motion.div>
         </div>
     );
