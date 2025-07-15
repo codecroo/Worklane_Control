@@ -7,7 +7,10 @@ import Button from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import Badge from "../components/ui/Badge";
 import {
-    Users, FolderKanban, CheckCircle2, Sparkles,
+    Users,
+    FolderKanban,
+    CheckCircle2,
+    Sparkles,
 } from "lucide-react";
 
 const typingVariants = {
@@ -65,13 +68,13 @@ const Home = () => {
         <div className="min-h-screen bg-black text-white relative">
             <div className={`transition-all duration-300 ${showLogout ? "blur-sm scale-[0.98]" : ""}`}>
 
-                {/* Heading */}
-                <div className="px-6 pt-10 pb-6">
+                {/* Header */}
+                <div className="px-6 pt-10 pb-6 max-w-[1440px] mx-auto">
                     <motion.h1
                         variants={typingVariants}
                         initial="hidden"
                         animate="visible"
-                        className="text-4xl font-bold text-white inline-block overflow-hidden whitespace-nowrap"
+                        className="text-4xl font-bold inline-block overflow-hidden whitespace-nowrap"
                     >
                         Dashboard
                     </motion.h1>
@@ -85,33 +88,27 @@ const Home = () => {
                     </motion.p>
                 </div>
 
-                {/* Overview Metrics */}
-                <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6 }}
-                >
-                    <div className="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-4 mx-6 mb-10">
-                        {[
-                            { Icon: Users, label: "Team", value: "12" },
-                            { Icon: FolderKanban, label: "Projects", value: "7" },
-                            { Icon: CheckCircle2, label: "Completed", value: "48" },
-                            { Icon: Sparkles, label: "Posters", value: "19" },
-                        ].map(({ Icon, label, value }, i) => (
-                            <Card key={i} className="bg-white/10 p-4 rounded-2xl backdrop-blur">
-                                <Icon className="w-6 h-6 text-white mb-2" />
-                                <p className="text-sm text-gray-400">{label}</p>
-                                <p className="text-xl font-bold">{value}</p>
-                            </Card>
-                        ))}
-                    </div>
-                </motion.div>
+                {/* Metrics Overview */}
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-4 mx-6 max-w-[1440px] mt-8">
+                    {[
+                        { Icon: Users, label: "Team Members", value: "12" },
+                        { Icon: FolderKanban, label: "Total Projects", value: "7" },
+                        { Icon: CheckCircle2, label: "Tasks Completed", value: "48" },
+                        { Icon: Sparkles, label: "AI Posters Made", value: "19" },
+                    ].map(({ Icon, label, value }, i) => (
+                        <Card key={i} className="bg-white/10 backdrop-blur p-4 rounded-xl">
+                            <Icon className="w-5 h-5 mb-2 text-white" />
+                            <p className="text-sm text-gray-400">{label}</p>
+                            <p className="text-xl font-bold">{value}</p>
+                        </Card>
+                    ))}
+                </div>
 
-                {/* Main Grid */}
-                <div className="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-6 px-6 pb-32">
-                    {/* Column 1 */}
-                    <div className="space-y-6">
+                {/* Main Grid Layout */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 px-6 py-12 max-w-[1440px] mx-auto">
+
+                    {/* Left Column */}
+                    <div className="space-y-8">
                         {/* Projects */}
                         <Card className="p-6">
                             <div className="flex justify-between items-center mb-4">
@@ -120,14 +117,12 @@ const Home = () => {
                             </div>
                             <div className="space-y-4">
                                 {projects.map((proj, i) => (
-                                    <div key={i} className="bg-white/10 p-4 rounded-xl">
-                                        <div className="flex justify-between items-center">
-                                            <div>
-                                                <p className="font-medium">{proj.title}</p>
-                                                <p className="text-xs text-gray-400">Deadline: {proj.deadline}</p>
-                                            </div>
-                                            <Badge>{proj.status}</Badge>
+                                    <div key={i} className="bg-white/10 p-4 rounded-lg flex justify-between items-center">
+                                        <div>
+                                            <p className="font-medium">{proj.title}</p>
+                                            <p className="text-xs text-gray-400">Deadline: {proj.deadline}</p>
                                         </div>
+                                        <Badge>{proj.status}</Badge>
                                     </div>
                                 ))}
                             </div>
@@ -136,9 +131,9 @@ const Home = () => {
                         {/* Deadlines */}
                         <Card className="p-6">
                             <h3 className="text-lg font-semibold mb-4">Upcoming Deadlines</h3>
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 {deadlines.map((item, i) => (
-                                    <div key={i} className="bg-white/10 p-4 rounded-xl flex justify-between">
+                                    <div key={i} className="flex justify-between items-center bg-white/10 p-3 rounded-lg">
                                         <p className="font-medium">{item.task}</p>
                                         <p className="text-sm text-gray-400">{item.due}</p>
                                     </div>
@@ -151,29 +146,29 @@ const Home = () => {
                             <h3 className="text-lg font-semibold mb-4">Project Status</h3>
                             <div className="grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-4">
                                 {statusStats.map((stat, i) => (
-                                    <div key={i} className="bg-white/10 p-4 rounded-xl backdrop-blur">
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <span className={`w-2.5 h-2.5 rounded-full ${stat.color}`}></span>
+                                    <div key={i} className="bg-white/10 rounded-lg p-4">
+                                        <div className="flex items-center space-x-2 mb-1">
+                                            <span className={`h-2.5 w-2.5 rounded-full ${stat.color}`}></span>
                                             <p className="text-sm text-gray-300">{stat.label}</p>
                                         </div>
-                                        <p className="text-xl font-bold">{stat.count}</p>
+                                        <p className="text-2xl font-bold">{stat.count}</p>
                                     </div>
                                 ))}
                             </div>
                         </Card>
                     </div>
 
-                    {/* Column 2 */}
-                    <div className="space-y-6">
+                    {/* Right Column */}
+                    <div className="space-y-8">
                         {/* Team */}
                         <Card className="p-6">
                             <div className="flex justify-between items-center mb-4">
                                 <h3 className="text-lg font-semibold">Team</h3>
                                 <Button variant="secondary" onClick={() => navigate("/team")}>View Team</Button>
                             </div>
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 {team.map((member, i) => (
-                                    <div key={i} className="bg-white/10 p-4 rounded-xl flex justify-between">
+                                    <div key={i} className="bg-white/10 p-3 rounded-lg flex justify-between items-center">
                                         <p className="font-medium">{member.name}</p>
                                         <Badge>{member.role}</Badge>
                                     </div>
@@ -184,9 +179,9 @@ const Home = () => {
                         {/* Poster Activity */}
                         <Card className="p-6">
                             <h3 className="text-lg font-semibold mb-4">Poster Activity</h3>
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 {posters.map((poster, i) => (
-                                    <div key={i} className="bg-white/10 p-4 rounded-xl flex justify-between">
+                                    <div key={i} className="bg-white/10 p-3 rounded-lg flex justify-between items-center">
                                         <div>
                                             <p className="font-medium">{poster.name}</p>
                                             <p className="text-xs text-gray-400">Created: {poster.created}</p>
