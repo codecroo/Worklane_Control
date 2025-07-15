@@ -1,5 +1,5 @@
 import BG from "../assets/bg.png";
-import Slide from "../components/layout/Slide";
+import Slide from "../components/ui/Slide";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { Card, CardHeader, CardDescription, CardTitle } from "../components/ui/Card";

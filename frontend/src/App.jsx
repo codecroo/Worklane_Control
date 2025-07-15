@@ -1,4 +1,10 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+// App.jsx
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import LandinPage from "./pages/LandinPage";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
@@ -6,6 +12,7 @@ import Team from "./pages/Team";
 import Projects from "./pages/Projects";
 import Marketing from "./pages/Marketing";
 import Home from "./pages/Home";
+import Layout from "./components/layout/Layout";
 import useAuthCheck from "./hooks/useAuthCheck";
 
 const AppRoutes = () => {
@@ -21,12 +28,18 @@ const AppRoutes = () => {
 
   return (
     <Routes>
-      <Route path="/" element={isAuthenticated ? <Home /> : <LandinPage />} />
+      {/* Public Pages */}
+      <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <LandinPage />} />
       <Route path="/signin" element={<SignIn />} />
       <Route path="/signup" element={<SignUp />} />
-      <Route path="/team" element={<Team />} />
-      <Route path="/projects" element={<Projects />} />
-      <Route path="/marketing" element={<Marketing />} />
+
+      {/* Protected Pages with Navbar */}
+      <Route element={<Layout />}>
+        <Route path="/dashboard" element={<Home />} />
+        <Route path="/team" element={<Team />} />
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/marketing" element={<Marketing />} />
+      </Route>
     </Routes>
   );
 };

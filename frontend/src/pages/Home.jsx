@@ -1,11 +1,10 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import BottomNavbar from "../components/BotttomNavbar";
-import Logout from "./Logout";
 import Button from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import Badge from "../components/ui/Badge";
+import { typingVariants, fadeIn } from "../animation/variants";
+
 import {
     Users,
     FolderKanban,
@@ -13,27 +12,7 @@ import {
     Sparkles,
 } from "lucide-react";
 
-const typingVariants = {
-    hidden: { width: 0, opacity: 0 },
-    visible: {
-        width: "auto",
-        opacity: 1,
-        transition: { duration: 1.2, ease: "easeOut", delay: 0.3 },
-    },
-};
-
-const fadeIn = {
-    hidden: { opacity: 0, filter: "blur(4px)", y: 10 },
-    visible: {
-        opacity: 1,
-        filter: "blur(0)",
-        y: 0,
-        transition: { duration: 0.6, delay: 0.6 },
-    },
-};
-
 const Home = () => {
-    const [showLogout, setShowLogout] = useState(false);
     const navigate = useNavigate();
 
     const projects = [
@@ -65,149 +44,146 @@ const Home = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-black text-white relative">
-            <div className={`transition-all duration-300 ${showLogout ? "blur-sm scale-[0.98]" : ""}`}>
-
-                {/* Header */}
-                <div className="px-6 pt-10 pb-6 max-w-[1440px] mx-auto">
-                    <motion.h1
-                        variants={typingVariants}
-                        initial="hidden"
-                        animate="visible"
-                        className="text-4xl font-bold inline-block overflow-hidden whitespace-nowrap"
-                    >
-                        Dashboard
-                    </motion.h1>
-                    <motion.p
-                        variants={fadeIn}
-                        initial="hidden"
-                        animate="visible"
-                        className="text-gray-400 mt-4 text-sm max-w-xl"
-                    >
-                        Manage your operations, track progress, and automate marketing — all in one control center.
-                    </motion.p>
-                </div>
-
-                {/* Metrics Overview */}
-                <div className="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-4 mx-6 max-w-[1440px] mt-8">
-                    {[
-                        { Icon: Users, label: "Team Members", value: "12" },
-                        { Icon: FolderKanban, label: "Total Projects", value: "7" },
-                        { Icon: CheckCircle2, label: "Tasks Completed", value: "48" },
-                        { Icon: Sparkles, label: "AI Posters Made", value: "19" },
-                    ].map(({ Icon, label, value }, i) => (
-                        <Card key={i} className="bg-white/10 backdrop-blur p-4 rounded-xl">
-                            <Icon className="w-5 h-5 mb-2 text-white" />
-                            <p className="text-sm text-gray-400">{label}</p>
-                            <p className="text-xl font-bold">{value}</p>
-                        </Card>
-                    ))}
-                </div>
-
-                {/* Main Grid Layout */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 px-6 py-12 max-w-[1440px] mx-auto">
-
-                    {/* Left Column */}
-                    <div className="space-y-8">
-                        {/* Projects */}
-                        <Card className="p-6">
-                            <div className="flex justify-between items-center mb-4">
-                                <h3 className="text-lg font-semibold">Your Projects</h3>
-                                <Button onClick={() => navigate("/projects")}>View All</Button>
-                            </div>
-                            <div className="space-y-4">
-                                {projects.map((proj, i) => (
-                                    <div key={i} className="bg-white/10 p-4 rounded-lg flex justify-between items-center">
-                                        <div>
-                                            <p className="font-medium">{proj.title}</p>
-                                            <p className="text-xs text-gray-400">Deadline: {proj.deadline}</p>
-                                        </div>
-                                        <Badge>{proj.status}</Badge>
-                                    </div>
-                                ))}
-                            </div>
-                        </Card>
-
-                        {/* Deadlines */}
-                        <Card className="p-6">
-                            <h3 className="text-lg font-semibold mb-4">Upcoming Deadlines</h3>
-                            <div className="space-y-3">
-                                {deadlines.map((item, i) => (
-                                    <div key={i} className="flex justify-between items-center bg-white/10 p-3 rounded-lg">
-                                        <p className="font-medium">{item.task}</p>
-                                        <p className="text-sm text-gray-400">{item.due}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </Card>
-
-                        {/* Status */}
-                        <Card className="p-6">
-                            <h3 className="text-lg font-semibold mb-4">Project Status</h3>
-                            <div className="grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-4">
-                                {statusStats.map((stat, i) => (
-                                    <div key={i} className="bg-white/10 rounded-lg p-4">
-                                        <div className="flex items-center space-x-2 mb-1">
-                                            <span className={`h-2.5 w-2.5 rounded-full ${stat.color}`}></span>
-                                            <p className="text-sm text-gray-300">{stat.label}</p>
-                                        </div>
-                                        <p className="text-2xl font-bold">{stat.count}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </Card>
-                    </div>
-
-                    {/* Right Column */}
-                    <div className="space-y-8">
-                        {/* Team */}
-                        <Card className="p-6">
-                            <div className="flex justify-between items-center mb-4">
-                                <h3 className="text-lg font-semibold">Team</h3>
-                                <Button variant="secondary" onClick={() => navigate("/team")}>View Team</Button>
-                            </div>
-                            <div className="space-y-3">
-                                {team.map((member, i) => (
-                                    <div key={i} className="bg-white/10 p-3 rounded-lg flex justify-between items-center">
-                                        <p className="font-medium">{member.name}</p>
-                                        <Badge>{member.role}</Badge>
-                                    </div>
-                                ))}
-                            </div>
-                        </Card>
-
-                        {/* Poster Activity */}
-                        <Card className="p-6">
-                            <h3 className="text-lg font-semibold mb-4">Poster Activity</h3>
-                            <div className="space-y-3">
-                                {posters.map((poster, i) => (
-                                    <div key={i} className="bg-white/10 p-3 rounded-lg flex justify-between items-center">
-                                        <div>
-                                            <p className="font-medium">{poster.name}</p>
-                                            <p className="text-xs text-gray-400">Created: {poster.created}</p>
-                                        </div>
-                                        <Badge>{poster.status}</Badge>
-                                    </div>
-                                ))}
-                            </div>
-                        </Card>
-
-                        {/* Quick Actions */}
-                        <Card className="p-6">
-                            <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                <Button className="w-full">+ Add Project</Button>
-                                <Button variant="secondary" className="w-full">Generate Poster</Button>
-                                <Button variant="outline" className="w-full">Schedule Post</Button>
-                            </div>
-                        </Card>
-                    </div>
-                </div>
-
-                <BottomNavbar onLogoutClick={() => setShowLogout(true)} />
+        <div className="min-h-screen bg-black text-white relative pb-20">
+            {/* Heading */}
+            <div className="px-6 pt-10 pb-6 max-w-[1440px] mx-auto">
+                <motion.h1
+                    variants={typingVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="text-4xl font-bold inline-block overflow-hidden whitespace-nowrap"
+                >
+                    Dashboard
+                </motion.h1>
+                <motion.p
+                    variants={fadeIn}
+                    initial="hidden"
+                    animate="visible"
+                    className="text-gray-400 mt-4 text-sm max-w-xl"
+                >
+                    Manage your operations, track progress, and automate marketing — all in one control center.
+                </motion.p>
             </div>
 
-            {showLogout && <Logout closeModal={() => setShowLogout(false)} />}
+            {/* Stats */}
+            <motion.div
+                variants={fadeIn}
+                initial="hidden"
+                animate="visible"
+                className="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-4 mx-6 max-w-[1440px] mt-8"
+            >
+                {[
+                    { Icon: Users, label: "Team Members", value: "12" },
+                    { Icon: FolderKanban, label: "Total Projects", value: "7" },
+                    { Icon: CheckCircle2, label: "Tasks Completed", value: "48" },
+                    { Icon: Sparkles, label: "AI Posters Made", value: "19" },
+                ].map(({ Icon, label, value }, i) => (
+                    <Card key={i} className="bg-white/10 backdrop-blur p-4 rounded-xl">
+                        <Icon className="w-5 h-5 mb-2 text-white" />
+                        <p className="text-sm text-gray-400">{label}</p>
+                        <p className="text-xl font-bold">{value}</p>
+                    </Card>
+                ))}
+            </motion.div>
+
+            {/* Main */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 px-6 py-12 max-w-[1440px] mx-auto">
+                {/* Left Side */}
+                <motion.div variants={fadeIn} initial="hidden" animate="visible" className="space-y-8">
+                    {/* Projects */}
+                    <Card className="p-6">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-lg font-semibold">Your Projects</h3>
+                            <Button onClick={() => navigate("/projects")}>View All</Button>
+                        </div>
+                        <div className="space-y-4">
+                            {projects.map((proj, i) => (
+                                <div key={i} className="bg-white/10 p-4 rounded-lg flex justify-between items-center">
+                                    <div>
+                                        <p className="font-medium">{proj.title}</p>
+                                        <p className="text-xs text-gray-400">Deadline: {proj.deadline}</p>
+                                    </div>
+                                    <Badge>{proj.status}</Badge>
+                                </div>
+                            ))}
+                        </div>
+                    </Card>
+
+                    {/* Deadlines */}
+                    <Card className="p-6">
+                        <h3 className="text-lg font-semibold mb-4">Upcoming Deadlines</h3>
+                        <div className="space-y-3">
+                            {deadlines.map((item, i) => (
+                                <div key={i} className="flex justify-between items-center bg-white/10 p-3 rounded-lg">
+                                    <p className="font-medium">{item.task}</p>
+                                    <p className="text-sm text-gray-400">{item.due}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </Card>
+
+                    {/* Status */}
+                    <Card className="p-6">
+                        <h3 className="text-lg font-semibold mb-4">Project Status</h3>
+                        <div className="grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-4">
+                            {statusStats.map((stat, i) => (
+                                <div key={i} className="bg-white/10 rounded-lg p-4">
+                                    <div className="flex items-center space-x-2 mb-1">
+                                        <span className={`h-2.5 w-2.5 rounded-full ${stat.color}`} />
+                                        <p className="text-sm text-gray-300">{stat.label}</p>
+                                    </div>
+                                    <p className="text-2xl font-bold">{stat.count}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </Card>
+                </motion.div>
+
+                {/* Right Side */}
+                <motion.div variants={fadeIn} initial="hidden" animate="visible" className="space-y-8">
+                    {/* Team */}
+                    <Card className="p-6">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-lg font-semibold">Team</h3>
+                            <Button variant="secondary" onClick={() => navigate("/team")}>View Team</Button>
+                        </div>
+                        <div className="space-y-3">
+                            {team.map((member, i) => (
+                                <div key={i} className="bg-white/10 p-3 rounded-lg flex justify-between items-center">
+                                    <p className="font-medium">{member.name}</p>
+                                    <Badge>{member.role}</Badge>
+                                </div>
+                            ))}
+                        </div>
+                    </Card>
+
+                    {/* Posters */}
+                    <Card className="p-6">
+                        <h3 className="text-lg font-semibold mb-4">Poster Activity</h3>
+                        <div className="space-y-3">
+                            {posters.map((poster, i) => (
+                                <div key={i} className="bg-white/10 p-3 rounded-lg flex justify-between items-center">
+                                    <div>
+                                        <p className="font-medium">{poster.name}</p>
+                                        <p className="text-xs text-gray-400">Created: {poster.created}</p>
+                                    </div>
+                                    <Badge>{poster.status}</Badge>
+                                </div>
+                            ))}
+                        </div>
+                    </Card>
+
+                    {/* Quick Actions */}
+                    <Card className="p-6">
+                        <h3 className="text-lg font-semibold mb-4">Quick Actions</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <Button className="w-full">+ Add Project</Button>
+                            <Button variant="secondary" className="w-full">Generate Poster</Button>
+                            <Button variant="outline" className="w-full">Schedule Post</Button>
+                        </div>
+                    </Card>
+                </motion.div>
+            </div>
         </div>
     );
 };
