@@ -11,7 +11,7 @@ import Logout from "../pages/Logout"; // Modal
 
 const navItems = [
     { label: "Dashboard", icon: LayoutGrid, path: "/dashboard" }, // ✅ fixed path
-    { label: "Team", icon: UsersIcon, path: "/team" },
+    { label: "Employees", icon: UsersIcon, path: "/Employees" },
     { label: "Projects", icon: FolderKanban, path: "/projects" },
     { label: "Marketing", icon: Sparkles, path: "/marketing" },
     { label: "Logout", icon: LogOut, path: "/logout" }, // UI only
@@ -89,8 +89,8 @@ const BottomNavbar = () => {
                                     />
 
                                     <div
-                                        className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2
-                                        bg-black/100 text-white text-[11px] font-medium px-3 py-1.5
+                                        className="absolute bottom-full mb-3 left-1/2 -translate-x-1/2
+                                        bg-black/100 text-white text-[13px] font-medium px-3 py-1.5
                                         rounded-md backdrop-blur-md border border-white/20
                                         opacity-0 scale-90 translate-y-1 pointer-events-none
                                         group-hover:opacity-100 group-hover:scale-100 group-hover:translate-y-0

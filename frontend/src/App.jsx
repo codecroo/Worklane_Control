@@ -8,7 +8,7 @@ import {
 import LandinPage from "./pages/LandinPage";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
-import Team from "./pages/Team";
+import Employees from "./pages/Employees";
 import Projects from "./pages/Projects";
 import Marketing from "./pages/Marketing";
 import Home from "./pages/Home";
@@ -36,7 +36,7 @@ const AppRoutes = () => {
       {/* Protected Pages with Navbar */}
       <Route element={<Layout />}>
         <Route path="/dashboard" element={<Home />} />
-        <Route path="/team" element={<Team />} />
+        <Route path="/Employees" element={<Employees />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/marketing" element={<Marketing />} />
       </Route>
