@@ -47,11 +47,12 @@ const Home = () => {
         <div className="min-h-screen bg-black text-white relative pb-20">
             {/* Heading */}
             <div className="px-6 pt-10 pb-6 max-w-[1440px] mx-auto">
+                {/* Heading */}
                 <motion.h1
                     variants={typingVariants}
                     initial="hidden"
                     animate="visible"
-                    className="text-4xl font-bold inline-block overflow-hidden whitespace-nowrap"
+                    className="text-4xl font-bold inline-block overflow-hidden whitespace-nowrap leading-tight pb-2"
                 >
                     Dashboard
                 </motion.h1>
@@ -70,8 +71,9 @@ const Home = () => {
                 variants={fadeIn}
                 initial="hidden"
                 animate="visible"
-                className="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-4 mx-6 max-w-[1440px] mt-8"
+                className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4 gap-4 px-6 max-w-screen-xl mx-auto mt-8"
             >
+
                 {[
                     { Icon: Users, label: "Team Members", value: "12" },
                     { Icon: FolderKanban, label: "Total Projects", value: "7" },

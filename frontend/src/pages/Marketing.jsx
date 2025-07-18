@@ -40,7 +40,7 @@ const Marketing = () => {
         variants={typingVariants}
         initial="hidden"
         animate="visible"
-        className="text-4xl font-bold inline-block overflow-hidden whitespace-nowrap"
+        className="text-4xl font-bold inline-block overflow-hidden whitespace-nowrap leading-tight pb-2"
       >
         Marketing
       </motion.h1>

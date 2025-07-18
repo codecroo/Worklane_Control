@@ -30,7 +30,7 @@ const Employees = () => {
                 variants={typingVariants}
                 initial="hidden"
                 animate="visible"
-                className="text-4xl font-bold inline-block overflow-hidden whitespace-nowrap"
+                className="text-4xl font-bold inline-block overflow-hidden whitespace-nowrap leading-tight pb-2"
             >
                 Employees
             </motion.h1>
@@ -54,12 +54,12 @@ const Employees = () => {
                 />
             </motion.div>
 
-            {/* Grid */}
+            {/* Responsive Grid */}
             <motion.div
                 variants={fadeIn}
                 initial="hidden"
                 animate="visible"
-                className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6"
+                className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-6"
             >
                 <AnimatePresence>
                     {filtered.map((employee, i) => (
@@ -70,18 +70,21 @@ const Employees = () => {
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
                             transition={{ duration: 0.2 }}
+                            className="h-full"
                         >
-                            <Card className="bg-white/10 p-6 rounded-2xl border border-white/10 backdrop-blur-md transition-transform hover:scale-[1.01] duration-300">
-                                <div className="flex items-center gap-4 mb-4">
-                                    <div className="bg-white/10 p-3 rounded-full">
-                                        <Users className="w-6 h-6 text-white" />
+                            <Card className="bg-white/10 p-6 rounded-2xl border border-white/10 backdrop-blur-md h-full min-h-[200px] flex flex-col justify-between">
+                                <div>
+                                    <div className="flex items-center gap-4 mb-4">
+                                        <div className="bg-white/10 p-3 rounded-full">
+                                            <Users className="w-6 h-6 text-white" />
+                                        </div>
+                                        <div>
+                                            <h3 className="font-semibold text-lg">{employee.name}</h3>
+                                            <p className="text-sm text-gray-400">{employee.role}</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <h3 className="font-semibold text-lg">{employee.name}</h3>
-                                        <p className="text-sm text-gray-400">{employee.role}</p>
-                                    </div>
+                                    <p className="text-sm text-gray-300 mb-2">{employee.bio}</p>
                                 </div>
-                                <p className="text-sm text-gray-300 mb-2">{employee.bio}</p>
                                 <p className="text-xs text-gray-500">Joined: {employee.joined}</p>
                             </Card>
                         </motion.div>
