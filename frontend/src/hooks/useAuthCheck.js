@@ -22,7 +22,7 @@ const useAuthCheck = () => {
                     console.log("Refreshed new access:", newAccess);
                     setIsAuthenticated(true);
                 } else {
-                    console.log("Failed to refresh token");
+                    console.log("Failed to refresh access token");
                     setIsAuthenticated(false);
                 }
 
