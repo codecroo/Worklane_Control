@@ -15,7 +15,7 @@ const Logout = ({ closeModal }) => {
     return (
         <AnimatePresence>
             <motion.div
-                className="fixed inset-0 z-[999] flex items-center justify-center bg-black/30 backdrop-blur-[10px]"
+                className="fixed inset-0 z-[999] flex items-center justify-center bg-white/15 backdrop-blur-[10px]"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -34,8 +34,8 @@ const Logout = ({ closeModal }) => {
                         y: 10,
                         transition: { duration: 0.2 },
                     }}
-                    className="w-full max-w-sm px-6 py-7 rounded-2xl bg-black border border-white/15 
-                     shadow-[0_8px_32px_rgba(0,0,0,0.4)] text-white text-center"
+                    className="w-full max-w-sm px-6 py-7 rounded-2xl bg-black border border-white/20 
+                     shadow-[0_40px_40px_rgba(0,0,0,0.5)] text-white text-center"
                 >
                     <div className="flex flex-col items-center gap-4">
                         <motion.div

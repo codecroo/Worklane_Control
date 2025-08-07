@@ -11,7 +11,7 @@ import Logout from "../pages/Logout"; // Modal
 
 const navItems = [
     { label: "Dashboard", icon: LayoutGrid, path: "/dashboard" }, // ✅ fixed path
-    { label: "Employees", icon: UsersIcon, path: "/Employees" },
+    { label: "Employees", icon: UsersIcon, path: "/employees" },
     { label: "Projects", icon: FolderKanban, path: "/projects" },
     { label: "Marketing", icon: Sparkles, path: "/marketing" },
     { label: "Logout", icon: LogOut, path: "/logout" }, // UI only

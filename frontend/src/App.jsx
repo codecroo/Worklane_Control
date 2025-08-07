@@ -35,10 +35,10 @@ const AppRoutes = () => {
 
       {/* Protected Pages with Navbar */}
       <Route element={<Layout />}>
-        <Route path="/dashboard" element={<Home />} />
-        <Route path="/Employees" element={<Employees />} />
-        <Route path="/projects" element={<Projects />} />
-        <Route path="/marketing" element={<Marketing />} />
+        <Route path="/dashboard" element={isAuthenticated ? <Home /> : <Navigate to="/" />} />
+        <Route path="/employees" element={isAuthenticated ? <Employees /> : <Navigate to="/" />} />
+        <Route path="/projects" element={isAuthenticated ? <Projects /> : <Navigate to="/" />} />
+        <Route path="/marketing" element={isAuthenticated ? <Marketing /> : <Navigate to="/" />} />
       </Route>
     </Routes>
   );

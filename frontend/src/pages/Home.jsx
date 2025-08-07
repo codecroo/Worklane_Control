@@ -147,7 +147,7 @@ const Home = () => {
                     <Card className="p-6">
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-lg font-semibold">Team</h3>
-                            <Button variant="secondary" onClick={() => navigate("/team")}>View Team</Button>
+                            <Button variant="secondary" onClick={() => navigate("/employees")}>View Team</Button>
                         </div>
                         <div className="space-y-3">
                             {team.map((member, i) => (
