@@ -1,11 +1,10 @@
 import axios from "axios";
 
 export const refreshAccessToken = async () => {
-
     const refresh_token = localStorage.getItem("refresh_token");
-
     if (!refresh_token) {
-        console.warn("No refresh token available");
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
         return null;
     }
 
@@ -18,7 +17,6 @@ export const refreshAccessToken = async () => {
         localStorage.setItem("access_token", access);
         return access;
     } catch (error) {
-        console.error("Failed to refresh access token:", error);
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
         return null;

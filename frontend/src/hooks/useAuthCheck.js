@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { isTokenValid } from "../utils/tokenUtils";
 import { refreshAccessToken } from "../utils/refreshAccessToken";
 
 const useAuthCheck = () => {
@@ -7,27 +8,16 @@ const useAuthCheck = () => {
 
     useEffect(() => {
         const checkAuth = async () => {
-            console.log("Checking Auth...");
             const access = localStorage.getItem("access_token");
 
-            if (access) {
-                console.log("Access token found:", access);
+            if (access && isTokenValid(access)) {
                 setIsAuthenticated(true);
-                setLoading(false);
             } else {
-                console.log("No access token. Trying refresh...");
                 const newAccess = await refreshAccessToken();
-
-                if (newAccess) {
-                    console.log("Refreshed new access:", newAccess);
-                    setIsAuthenticated(true);
-                } else {
-                    console.log("Failed to refresh access token");
-                    setIsAuthenticated(false);
-                }
-
-                setLoading(false); // ✅ Don't forget this
+                setIsAuthenticated(!!newAccess);
             }
+
+            setLoading(false);
         };
 
         checkAuth();
