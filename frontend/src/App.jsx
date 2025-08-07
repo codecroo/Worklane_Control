@@ -9,7 +9,7 @@ import LandinPage from "./pages/LandinPage";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Employees from "./pages/Employees";
-import Projects from "./pages/Projects";
+import Projects from "./pages/Projects"; 
 import Marketing from "./pages/Marketing";
 import Home from "./pages/Home";
 import Layout from "./components/layout/Layout";
