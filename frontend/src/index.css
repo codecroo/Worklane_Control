@@ -12,7 +12,6 @@ body {
   font-variant-ligatures: none;
 }
 
-
 /* === Hide Scrollbar Globally When Needed === */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
@@ -81,3 +80,26 @@ img {
   outline: 1px dashed rgba(255, 255, 255, 0.1);
 }
 */
+
+
+html {
+  overflow-y: scroll;
+}
+
+body {
+  min-height: 100vh;
+}
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(0, 0, 0);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(146, 146, 146, 0.61), rgba(140, 140, 140, 0.29),rgba(255, 255, 255, 0.377));
+  border-radius: 10px;
+}
