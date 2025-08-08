@@ -14,13 +14,15 @@ const Employees = () => {
 
     const fetchEmployees = async () => {
         try {
-            setLoading(true);
-            const res = await axios.get(`${API_BASE}/all/`);
-            setEmployees(res.data);
-        } catch (err) {
-            console.error("Error fetching employees:", err);
-        } finally {
-            setLoading(false);
+            const token = localStorage.getItem('access_token'); // JWT token from login
+            const response = await axios.get('http://localhost:8000/api/employees/all/', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setEmployees(response.data);
+        } catch (error) {
+            console.error('Error fetching employees:', error);
         }
     };
 
