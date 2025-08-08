@@ -3,7 +3,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Users, Pencil, Trash2, Plus } from "lucide-react";
 import { typingVariants, fadeIn } from "../animation/variants";
 import { Card } from "../components/ui/Card";
+import axiosInstance from "../utils/axiosInstance"
 import axios from "axios";
+
 
 const API_BASE = "http://localhost:8000/api/employees"; // adjust as needed
 
@@ -14,12 +16,8 @@ const Employees = () => {
 
     const fetchEmployees = async () => {
         try {
-            const token = localStorage.getItem('access_token'); // JWT token from login
-            const response = await axios.get('http://localhost:8000/api/employees/all/', {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const response = await axiosInstance.get('api/employees/all/');
+
             setEmployees(response.data);
         } catch (error) {
             console.error('Error fetching employees:', error);
