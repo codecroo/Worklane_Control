@@ -6,13 +6,43 @@ import { motion, AnimatePresence } from "framer-motion";
 const backdrop = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 0.2 } },
-    exit: { opacity: 0, transition: { duration: 0.15 } },
+    exit: { opacity: 0, transition: { duration: 0.2 } },
 };
 
 const modal = {
-    hidden: { opacity: 0, scale: 0.95, y: -20 },
-    visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.2 } },
-    exit: { opacity: 0, scale: 0.9, y: -10, transition: { duration: 0.15 } },
+    hidden: { opacity: 0, scale: 0.95, y: 30 },
+    visible: {
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        transition: {
+            type: "spring",
+            stiffness: 260,
+            damping: 25,
+            duration: 0.4
+        }
+    },
+    exit: {
+        opacity: 0,
+        scale: 0.9,
+        y: -20,
+        transition: {
+            duration: 0.2,
+            ease: "easeInOut"
+        }
+    },
+};
+
+const inputVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: (i) => ({
+        opacity: 1,
+        y: 0,
+        transition: {
+            delay: 0.05 * i,
+            duration: 0.25
+        }
+    })
 };
 
 const EmployeeModal = ({ onClose, onSubmit, editingEmployee }) => {
@@ -45,6 +75,13 @@ const EmployeeModal = ({ onClose, onSubmit, editingEmployee }) => {
         onSubmit(formData);
     };
 
+    const fields = [
+        { name: "name", placeholder: "Name", type: "text", required: true },
+        { name: "email", placeholder: "Email", type: "email", required: true },
+        { name: "position", placeholder: "Position", type: "text", required: true },
+        { name: "department", placeholder: "Department", type: "text", required: true }
+    ];
+
     return (
         <AnimatePresence>
             <motion.div
@@ -67,57 +104,48 @@ const EmployeeModal = ({ onClose, onSubmit, editingEmployee }) => {
                     >
                         <X />
                     </button>
-                    <h2 className="text-xl font-semibold mb-4">
+                    <h2 className="text-xl font-semibold mb-6">
                         {editingEmployee ? "Edit Employee" : "Add Employee"}
                     </h2>
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        <input
-                            name="name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            placeholder="Name"
-                            required
-                            className="w-full bg-white/10 px-4 py-2 rounded-md border border-white/20 text-white placeholder:text-gray-400"
-                        />
-                        <input
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            placeholder="Email"
-                            type="email"
-                            required
-                            className="w-full bg-white/10 px-4 py-2 rounded-md border border-white/20 text-white placeholder:text-gray-400"
-                        />
-                        <input
-                            name="position"
-                            value={formData.position}
-                            onChange={handleChange}
-                            placeholder="Position"
-                            required
-                            className="w-full bg-white/10 px-4 py-2 rounded-md border border-white/20 text-white placeholder:text-gray-400"
-                        />
-                        <input
-                            name="department"
-                            value={formData.department}
-                            onChange={handleChange}
-                            placeholder="Department"
-                            required
-                            className="w-full bg-white/10 px-4 py-2 rounded-md border border-white/20 text-white placeholder:text-gray-400"
-                        />
-                        <textarea
+                        {fields.map((field, i) => (
+                            <motion.input
+                                key={field.name}
+                                name={field.name}
+                                type={field.type}
+                                value={formData[field.name]}
+                                onChange={handleChange}
+                                placeholder={field.placeholder}
+                                required={field.required}
+                                className="w-full bg-white/10 px-4 py-2 rounded-md border border-white/20 text-white placeholder:text-gray-400"
+                                custom={i}
+                                initial="hidden"
+                                animate="visible"
+                                variants={inputVariants}
+                            />
+                        ))}
+                        <motion.textarea
                             name="bio"
                             value={formData.bio}
                             onChange={handleChange}
                             placeholder="Short Bio"
                             className="w-full bg-white/10 px-4 py-2 rounded-md border border-white/20 text-white placeholder:text-gray-400"
                             rows={4}
+                            custom={fields.length}
+                            initial="hidden"
+                            animate="visible"
+                            variants={inputVariants}
                         />
-                        <button
+                        <motion.button
                             type="submit"
                             className="w-full bg-white/20 hover:bg-white/30 transition px-4 py-2 rounded-md text-white"
+                            custom={fields.length + 1}
+                            initial="hidden"
+                            animate="visible"
+                            variants={inputVariants}
                         >
                             {editingEmployee ? "Update" : "Add"}
-                        </button>
+                        </motion.button>
                     </form>
                 </motion.div>
             </motion.div>

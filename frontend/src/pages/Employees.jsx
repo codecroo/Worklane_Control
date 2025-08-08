@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Users, Pencil, Trash2, Plus } from "lucide-react";
 import { typingVariants, fadeIn } from "../animation/variants";
 import { Card } from "../components/ui/Card";
+import Button from "../components/ui/Button"
 import EmployeeModal from "../components/EmployeeModal";
 import axiosInstance from "../utils/axiosInstance";
 
@@ -94,13 +95,13 @@ const Employees = () => {
                         placeholder="Search employees..."
                         className="bg-white/10 border border-white/20 px-4 py-2 text-sm rounded-md backdrop-blur placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-300"
                     />
-                    <button
+                    <Button
                         onClick={handleAdd}
-                        className="bg-white/10 border border-white/20 px-4 py-2 rounded-md text-sm text-white flex items-center gap-2 hover:bg-white/20 transition"
+                        size="sm"
                     >
                         <Plus className="w-4 h-4" />
-                        Add
-                    </button>
+                        Add Employee
+                    </Button>
                 </div>
             </motion.div>
 
