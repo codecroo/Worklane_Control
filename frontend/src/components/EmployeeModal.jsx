@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import Button from "../components/ui/Button"
+const MotionButton = motion(Button);
 
 const backdrop = {
     hidden: { opacity: 0 },
@@ -136,16 +138,17 @@ const EmployeeModal = ({ onClose, onSubmit, editingEmployee }) => {
                             animate="visible"
                             variants={inputVariants}
                         />
-                        <motion.button
+
+                        <MotionButton
                             type="submit"
-                            className="w-full bg-white/20 hover:bg-white/30 transition px-4 py-2 rounded-md text-white"
-                            custom={fields.length + 1}
-                            initial="hidden"
-                            animate="visible"
-                            variants={inputVariants}
+                            className="w-full rounded-md text-white"
+                            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 10, scale: 0.9 }}
+                            transition={{ duration: 0.3, ease: "easeInOut" }}
                         >
                             {editingEmployee ? "Update" : "Add"}
-                        </motion.button>
+                        </MotionButton>
                     </form>
                 </motion.div>
             </motion.div>
