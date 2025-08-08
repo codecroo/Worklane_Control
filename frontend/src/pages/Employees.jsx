@@ -3,33 +3,57 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Users, Pencil, Trash2, Plus } from "lucide-react";
 import { typingVariants, fadeIn } from "../animation/variants";
 import { Card } from "../components/ui/Card";
-import axiosInstance from "../utils/axiosInstance"
-import axios from "axios";
-
-
-const API_BASE = "http://localhost:8000/api/employees"; // adjust as needed
+import EmployeeModal from "../components/EmployeeModal";
+import axiosInstance from "../utils/axiosInstance";
 
 const Employees = () => {
     const [employees, setEmployees] = useState([]);
     const [search, setSearch] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [editingEmployee, setEditingEmployee] = useState(null);
 
     const fetchEmployees = async () => {
         try {
-            const response = await axiosInstance.get('api/employees/all/');
-
+            const response = await axiosInstance.get("api/employees/all/");
             setEmployees(response.data);
         } catch (error) {
-            console.error('Error fetching employees:', error);
+            console.error("Error fetching employees:", error);
         }
     };
 
     const deleteEmployee = async (id) => {
         try {
-            await axios.delete(`${API_BASE}/${id}/`);
+            await axiosInstance.delete(`api/employees/${id}/`);
             setEmployees((prev) => prev.filter((e) => e.id !== id));
         } catch (err) {
             console.error("Delete failed:", err);
+        }
+    };
+
+    const handleAdd = () => {
+        setEditingEmployee(null);
+        setShowModal(true);
+    };
+
+    const handleEdit = (employee) => {
+        setEditingEmployee(employee);
+        setShowModal(true);
+    };
+
+    const handleSubmit = async (data) => {
+        try {
+            if (editingEmployee) {
+                const res = await axiosInstance.put(`api/employees/${editingEmployee.id}/`, data);
+                setEmployees((prev) =>
+                    prev.map((emp) => (emp.id === editingEmployee.id ? res.data.data : emp))
+                );
+            } else {
+                const res = await axiosInstance.post(`api/employees/add/`, data);
+                setEmployees((prev) => [res.data.data, ...prev]);
+            }
+            setShowModal(false);
+        } catch (error) {
+            console.error("Submit failed:", error);
         }
     };
 
@@ -44,7 +68,6 @@ const Employees = () => {
 
     return (
         <div className="min-h-screen bg-black text-white relative pb-20 px-6 pt-10 max-w-[1440px] mx-auto">
-            {/* Heading */}
             <motion.h1
                 variants={typingVariants}
                 initial="hidden"
@@ -54,7 +77,6 @@ const Employees = () => {
                 Employees
             </motion.h1>
 
-            {/* Description + Search + Add Button */}
             <motion.div
                 variants={fadeIn}
                 initial="hidden"
@@ -73,7 +95,7 @@ const Employees = () => {
                         className="bg-white/10 border border-white/20 px-4 py-2 text-sm rounded-md backdrop-blur placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-300"
                     />
                     <button
-                        onClick={() => alert("Show modal to add employee")}
+                        onClick={handleAdd}
                         className="bg-white/10 border border-white/20 px-4 py-2 rounded-md text-sm text-white flex items-center gap-2 hover:bg-white/20 transition"
                     >
                         <Plus className="w-4 h-4" />
@@ -82,7 +104,6 @@ const Employees = () => {
                 </div>
             </motion.div>
 
-            {/* Employees Grid */}
             <motion.div
                 variants={fadeIn}
                 initial="hidden"
@@ -117,7 +138,7 @@ const Employees = () => {
                                     <p className="text-xs text-gray-500">Joined: {employee.created_at}</p>
                                     <div className="flex items-center gap-2">
                                         <button
-                                            onClick={() => alert("Open edit modal")}
+                                            onClick={() => handleEdit(employee)}
                                             className="hover:text-yellow-400 transition"
                                         >
                                             <Pencil className="w-4 h-4" />
@@ -135,6 +156,15 @@ const Employees = () => {
                     ))}
                 </AnimatePresence>
             </motion.div>
+
+            {/* Modal */}
+            {showModal && (
+                <EmployeeModal
+                    onClose={() => setShowModal(false)}
+                    onSubmit={handleSubmit}
+                    editingEmployee={editingEmployee}
+                />
+            )}
         </div>
     );
 };
