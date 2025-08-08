@@ -1,26 +1,45 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Users } from "lucide-react";
+import { Users, Pencil, Trash2, Plus } from "lucide-react";
 import { typingVariants, fadeIn } from "../animation/variants";
 import { Card } from "../components/ui/Card";
+import axios from "axios";
 
-const employees = [
-    { name: "Riya Sharma", role: "UI Designer", joined: "Mar 2023", bio: "Designs clean, user-centric interfaces." },
-    { name: "Jatin Mehta", role: "Frontend Developer", joined: "Feb 2024", bio: "Builds fast, accessible web apps." },
-    { name: "Priya Das", role: "Marketing Lead", joined: "Jan 2023", bio: "Leads campaigns with great insight." },
-    { name: "Soham Jain", role: "Backend Developer", joined: "Aug 2024", bio: "Handles data flow and APIs." },
-    { name: "Alisha Gupta", role: "Sales Strategist", joined: "May 2023", bio: "Drives business through strategic outreach." },
-    { name: "Nikhil Rawat", role: "AI Operations Engineer", joined: "Jun 2024", bio: "Automates operations using AI tools." },
-    { name: "Meena Kapoor", role: "HR Manager", joined: "Jul 2022", bio: "Maintains healthy team dynamics." },
-    { name: "Devansh Solanki", role: "Business Development", joined: "Dec 2023", bio: "Scales partnerships and outreach." },
-];
+const API_BASE = "http://localhost:8000/api/employees"; // adjust as needed
 
 const Employees = () => {
+    const [employees, setEmployees] = useState([]);
     const [search, setSearch] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const fetchEmployees = async () => {
+        try {
+            setLoading(true);
+            const res = await axios.get(`${API_BASE}/all/`);
+            setEmployees(res.data);
+        } catch (err) {
+            console.error("Error fetching employees:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const deleteEmployee = async (id) => {
+        try {
+            await axios.delete(`${API_BASE}/${id}/`);
+            setEmployees((prev) => prev.filter((e) => e.id !== id));
+        } catch (err) {
+            console.error("Delete failed:", err);
+        }
+    };
+
+    useEffect(() => {
+        fetchEmployees();
+    }, []);
 
     const filtered = employees.filter((employee) =>
         employee.name.toLowerCase().includes(search.toLowerCase()) ||
-        employee.role.toLowerCase().includes(search.toLowerCase())
+        employee.position.toLowerCase().includes(search.toLowerCase())
     );
 
     return (
@@ -35,7 +54,7 @@ const Employees = () => {
                 Employees
             </motion.h1>
 
-            {/* Description + Search */}
+            {/* Description + Search + Add Button */}
             <motion.div
                 variants={fadeIn}
                 initial="hidden"
@@ -45,16 +64,25 @@ const Employees = () => {
                 <p className="text-sm text-gray-400 max-w-xl">
                     Manage all employees and assign them to different projects or teams.
                 </p>
-                <input
-                    type="text"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Search employees..."
-                    className="bg-white/10 border border-white/20 px-4 py-2 text-sm rounded-md backdrop-blur placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-300"
-                />
+                <div className="flex items-center gap-3">
+                    <input
+                        type="text"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        placeholder="Search employees..."
+                        className="bg-white/10 border border-white/20 px-4 py-2 text-sm rounded-md backdrop-blur placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-300"
+                    />
+                    <button
+                        onClick={() => alert("Show modal to add employee")}
+                        className="bg-white/10 border border-white/20 px-4 py-2 rounded-md text-sm text-white flex items-center gap-2 hover:bg-white/20 transition"
+                    >
+                        <Plus className="w-4 h-4" />
+                        Add
+                    </button>
+                </div>
             </motion.div>
 
-            {/* Responsive Grid */}
+            {/* Employees Grid */}
             <motion.div
                 variants={fadeIn}
                 initial="hidden"
@@ -62,9 +90,9 @@ const Employees = () => {
                 className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-6"
             >
                 <AnimatePresence>
-                    {filtered.map((employee, i) => (
+                    {filtered.map((employee) => (
                         <motion.div
-                            key={i}
+                            key={employee.id}
                             layout
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -80,12 +108,28 @@ const Employees = () => {
                                         </div>
                                         <div>
                                             <h3 className="font-semibold text-lg">{employee.name}</h3>
-                                            <p className="text-sm text-gray-400">{employee.role}</p>
+                                            <p className="text-sm text-gray-400">{employee.position}</p>
                                         </div>
                                     </div>
                                     <p className="text-sm text-gray-300 mb-2">{employee.bio}</p>
                                 </div>
-                                <p className="text-xs text-gray-500">Joined: {employee.joined}</p>
+                                <div className="flex justify-between items-center mt-2">
+                                    <p className="text-xs text-gray-500">Joined: {employee.created_at}</p>
+                                    <div className="flex items-center gap-2">
+                                        <button
+                                            onClick={() => alert("Open edit modal")}
+                                            className="hover:text-yellow-400 transition"
+                                        >
+                                            <Pencil className="w-4 h-4" />
+                                        </button>
+                                        <button
+                                            onClick={() => deleteEmployee(employee.id)}
+                                            className="hover:text-red-500 transition"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </div>
                             </Card>
                         </motion.div>
                     ))}
