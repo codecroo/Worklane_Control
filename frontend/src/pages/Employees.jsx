@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Users, Pencil, Trash2, Plus } from "lucide-react";
 import { typingVariants, fadeIn } from "../animation/variants";
 import { Card } from "../components/ui/Card";
-import Button from "../components/ui/Button"
+import Button from "../components/ui/Button";
 import EmployeeModal from "../components/EmployeeModal";
 import axiosInstance from "../utils/axiosInstance";
 
@@ -140,7 +140,7 @@ const Employees = () => {
                                     <div className="flex items-center gap-2">
                                         <button
                                             onClick={() => handleEdit(employee)}
-                                            className="hover:text-yellow-400 transition"
+                                            className="hover:text-indigo-600 transition"
                                         >
                                             <Pencil className="w-4 h-4" />
                                         </button>

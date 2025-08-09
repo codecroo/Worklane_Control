@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'corsheaders', 
     'user_auth',
     'employees',
+    # 'projects',
 ]
 
 
