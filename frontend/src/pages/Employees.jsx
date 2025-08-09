@@ -50,7 +50,7 @@ const Employees = () => {
                 );
             } else {
                 const res = await axiosInstance.post(`api/employees/add/`, data);
-                setEmployees((prev) => [res.data.data, ...prev]);
+                setEmployees((prev) => [res.data, ...prev]);
             }
             setShowModal(false);
         } catch (error) {

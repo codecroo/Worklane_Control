@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from "../components/ui/Button"
-const MotionButton = motion(Button);
+const MotionButton = motion.create(Button);
 
 const backdrop = {
     hidden: { opacity: 0 },

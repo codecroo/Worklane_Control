@@ -4,6 +4,8 @@ import Button from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import Badge from "../components/ui/Badge";
 import { typingVariants, fadeIn } from "../animation/variants";
+import { useEffect, useState } from "react";
+import axiosInstance from "../utils/axiosInstance";
 
 import {
     Users,
@@ -14,6 +16,21 @@ import {
 
 const Home = () => {
     const navigate = useNavigate();
+
+    const [employeeCount, setEmployeeCount] = useState(0);
+
+    useEffect(() => {
+        const fetchEmployeeCount = async () => {
+            try {
+                const res = await axiosInstance.get("api/employees/count/");
+                setEmployeeCount(res.data.count);
+            } catch (error) {
+                console.error("Failed to fetch employee count:", error);
+            }
+        };
+
+        fetchEmployeeCount();
+    }, []);
 
     const projects = [
         { title: "Marketing Revamp", deadline: "2025-07-25", status: "Ongoing" },
@@ -75,7 +92,7 @@ const Home = () => {
             >
 
                 {[
-                    { Icon: Users, label: "Team Members", value: "12" },
+                    { Icon: Users, label: "Team Members", value: employeeCount },
                     { Icon: FolderKanban, label: "Total Projects", value: "7" },
                     { Icon: CheckCircle2, label: "Tasks Completed", value: "48" },
                     { Icon: Sparkles, label: "AI Posters Made", value: "19" },

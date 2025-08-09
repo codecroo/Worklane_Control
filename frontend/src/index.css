@@ -41,7 +41,7 @@ button:hover {
 
 /* === Global Selection Color === */
 ::selection {
-  background-color: rgba(59, 130, 246, 0.3);
+  background-color: rgba(83, 83, 83, 0.653);
   /* Tailwind blue-500/30 */
   color: white;
 }
@@ -100,6 +100,6 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(146, 146, 146, 0.61), rgba(140, 140, 140, 0.29),rgba(255, 255, 255, 0.377));
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.514), rgba(255, 255, 255, 0.514), rgba(0, 0, 0, 0.829));
   border-radius: 10px;
 }

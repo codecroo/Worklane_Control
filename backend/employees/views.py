@@ -9,13 +9,20 @@ from rest_framework.permissions import IsAuthenticated
 # EmployeeCreateView
 class EmployeeCreateView(APIView):
     permission_classes = [IsAuthenticated]
-    
+
     def post(self, request):
         serializer = EmployeeSerializer(data=request.data)
         if serializer.is_valid():
             employee = serializer.save(user=request.user)  # assign the logged-in user
             return Response(EmployeeSerializer(employee).data, status=201)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class EmployeeCountView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        count = Employee.objects.filter(user=request.user).count()
+        return Response({"count": count})
 
 class EmployeeListView(APIView):
     permission_classes = [IsAuthenticated]
@@ -24,7 +31,6 @@ class EmployeeListView(APIView):
         employees = Employee.objects.filter(user=request.user)
         serializer = EmployeeSerializer(employees, many=True)
         return Response(serializer.data)
-    
     
 # EmployeeDetailView
 class EmployeeDetailView(APIView):
