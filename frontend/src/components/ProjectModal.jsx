@@ -239,9 +239,6 @@ const ProjectModal = ({ onClose, onSubmit, editingProject }) => {
                                                     ? "0 0 100px 15px rgba(110, 110, 110, 0.45)"
                                                     : "none",
                                             }}
-
-
-
                                             transition={{ type: "spring", stiffness: 300, damping: 20 }}
                                             className="px-3 py-1 rounded-full border border-white/30 cursor-pointer text-sm select-none"
                                         >
