@@ -22,8 +22,8 @@ const modal = {
             type: "spring",
             stiffness: 260,
             damping: 25,
-            duration: 0.4
-        }
+            duration: 0.4,
+        },
     },
     exit: {
         opacity: 0,
@@ -31,8 +31,8 @@ const modal = {
         y: -20,
         transition: {
             duration: 0.2,
-            ease: "easeInOut"
-        }
+            ease: "easeInOut",
+        },
     },
 };
 
@@ -43,9 +43,9 @@ const inputVariants = {
         y: 0,
         transition: {
             delay: 0.05 * i,
-            duration: 0.25
-        }
-    })
+            duration: 0.25,
+        },
+    }),
 };
 
 const ProjectModal = ({ onClose, onSubmit, editingProject }) => {
@@ -53,8 +53,10 @@ const ProjectModal = ({ onClose, onSubmit, editingProject }) => {
         name: "",
         deadline: "",
         employees: [],
+        tasks: [], // NEW: tasks array of strings
     });
     const [employeesList, setEmployeesList] = useState([]);
+    const [newTask, setNewTask] = useState(""); // input for new task
 
     useEffect(() => {
         const fetchEmployees = async () => {
@@ -72,13 +74,14 @@ const ProjectModal = ({ onClose, onSubmit, editingProject }) => {
                 name: editingProject.name || "",
                 deadline: editingProject.deadline || "",
                 employees: editingProject.employees?.map((e) => e.id) || [],
+                tasks: editingProject.tasks || [], // Assuming tasks is array of strings
             });
         }
     }, [editingProject]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
     const toggleEmployee = (id) => {
@@ -93,9 +96,37 @@ const ProjectModal = ({ onClose, onSubmit, editingProject }) => {
         });
     };
 
+    // Add new task from input field
+    const addTask = () => {
+        const trimmed = newTask.trim();
+        if (trimmed && !formData.tasks.includes(trimmed)) {
+            setFormData((prev) => ({
+                ...prev,
+                tasks: [...prev.tasks, trimmed],
+            }));
+            setNewTask("");
+        }
+    };
+
+    // Remove a task from the list
+    const removeTask = (taskToRemove) => {
+        setFormData((prev) => ({
+            ...prev,
+            tasks: prev.tasks.filter((t) => t !== taskToRemove),
+        }));
+    };
+
+    // Add task on Enter key press
+    const handleTaskKeyDown = (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            addTask();
+        }
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSubmit(formData);
+        onSubmit(formData); // tasks already array of strings here
     };
 
     return (
@@ -125,8 +156,7 @@ const ProjectModal = ({ onClose, onSubmit, editingProject }) => {
                         {editingProject ? "Edit Project" : "Add Project"}
                     </h2>
                     <form onSubmit={handleSubmit} className="space-y-4">
-
-                        {/* Project Name input with icon inside */}
+                        {/* Project Name input */}
                         <motion.div
                             className="relative w-full custom-0"
                             custom={0}
@@ -149,7 +179,10 @@ const ProjectModal = ({ onClose, onSubmit, editingProject }) => {
                             />
                         </motion.div>
 
-                        <label htmlFor="deadline" className="block mb-1 text-gray-300">Deadline</label>
+                        {/* Deadline input */}
+                        <label htmlFor="deadline" className="block mb-1 text-gray-300">
+                            Deadline
+                        </label>
                         <motion.div
                             className="relative w-full custom-1"
                             custom={1}
@@ -173,8 +206,7 @@ const ProjectModal = ({ onClose, onSubmit, editingProject }) => {
                             />
                         </motion.div>
 
-
-                        {/* Employees section with icon + label */}
+                        {/* Employees selection */}
                         <motion.div
                             className="flex flex-col"
                             custom={2}
@@ -197,10 +229,14 @@ const ProjectModal = ({ onClose, onSubmit, editingProject }) => {
                                             onClick={() => toggleEmployee(emp.id)}
                                             initial={false}
                                             animate={{
-                                                backgroundColor: isSelected ? "rgba(100,110,210,0.4)" : "transparent",
+                                                backgroundColor: isSelected
+                                                    ? "rgba(100,110,210,0.4)"
+                                                    : "transparent",
                                                 color: isSelected ? "#FFF" : "#D1D5DB",
                                                 scale: isSelected ? 1.01 : 1,
-                                                boxShadow: isSelected ? "0 0 8px rgba(99,102,241,0.6)" : "none",
+                                                boxShadow: isSelected
+                                                    ? "0 0 8px rgba(99,102,241,0.6)"
+                                                    : "none",
                                             }}
                                             transition={{ type: "spring", stiffness: 300, damping: 20 }}
                                             className="px-3 py-1 rounded-full border border-white/30 cursor-pointer text-sm select-none"
@@ -209,6 +245,54 @@ const ProjectModal = ({ onClose, onSubmit, editingProject }) => {
                                         </motion.button>
                                     );
                                 })}
+                            </div>
+                        </motion.div>
+
+                        {/* Tasks input */}
+                        <motion.div
+                            className="relative w-full"
+                            custom={3}
+                            initial="hidden"
+                            animate="visible"
+                            variants={inputVariants}
+                        >
+                            <label className="block mb-1 text-gray-300">Add Tasks</label>
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    value={newTask}
+                                    onChange={(e) => setNewTask(e.target.value)}
+                                    onKeyDown={handleTaskKeyDown}
+                                    placeholder="Type a task and press Enter"
+                                    className="flex-grow bg-white/10 py-2 px-3 rounded-md border border-white/20 text-white placeholder:text-gray-300"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={addTask}
+                                    className="bg-indigo-600 px-4 rounded-md text-white hover:bg-indigo-700 transition"
+                                >
+                                    Add
+                                </button>
+                            </div>
+
+                            {/* Display added tasks */}
+                            <div className="mt-2 flex flex-wrap gap-2">
+                                {formData.tasks.map((task, idx) => (
+                                    <div
+                                        key={idx}
+                                        className="flex items-center gap-1 bg-indigo-500/70 text-white rounded-full px-3 py-1 text-sm select-none"
+                                    >
+                                        <span>{task}</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => removeTask(task)}
+                                            className="hover:text-indigo-300 transition"
+                                            aria-label={`Remove task ${task}`}
+                                        >
+                                            <X size={14} />
+                                        </button>
+                                    </div>
+                                ))}
                             </div>
                         </motion.div>
 
