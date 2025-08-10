@@ -266,13 +266,12 @@ const ProjectModal = ({ onClose, onSubmit, editingProject }) => {
                                     placeholder="Type a task and press Enter"
                                     className="flex-grow bg-white/10 py-2 px-3 rounded-md border border-white/20 text-white placeholder:text-gray-300"
                                 />
-                                <button
-                                    type="button"
+                                <Button
+                                    size="sm"
                                     onClick={addTask}
-                                    className="bg-indigo-600 px-4 rounded-md text-white hover:bg-indigo-700 transition"
                                 >
                                     Add
-                                </button>
+                                </Button>
                             </div>
 
                             {/* Display added tasks */}
@@ -280,7 +279,7 @@ const ProjectModal = ({ onClose, onSubmit, editingProject }) => {
                                 {formData.tasks.map((task, idx) => (
                                     <div
                                         key={idx}
-                                        className="flex items-center gap-1 bg-indigo-500/70 text-white rounded-full px-3 py-1 text-sm select-none"
+                                        className="flex items-center gap-1 bg-blue-500/10 text-white-200 border border-blue-300/30 shadow - md hover:bg-blue-500/20 rounded-full px-3 py-1 text-sm select-none"
                                     >
                                         <span>{task}</span>
                                         <button
