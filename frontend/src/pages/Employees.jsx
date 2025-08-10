@@ -22,14 +22,17 @@ const Employees = () => {
         }
     };
 
-    const deleteEmployee = async (id) => {
+    // Delete Project
+    const handleDelete = async (id) => {
+        if (!window.confirm("Are you sure you want to delete this employee?")) return;
         try {
-            await axiosInstance.delete(`api/employees/${id}/`);
+            await axiosInstance.delete(`/api/employees/${id}/`);
             setEmployees((prev) => prev.filter((e) => e.id !== id));
         } catch (err) {
-            console.error("Delete failed:", err);
+            console.error("Error deleting employee", err);
         }
     };
+
 
     const handleAdd = () => {
         setEditingEmployee(null);
@@ -145,7 +148,7 @@ const Employees = () => {
                                             <Pencil className="w-4 h-4" />
                                         </button>
                                         <button
-                                            onClick={() => deleteEmployee(employee.id)}
+                                            onClick={() => handleDelete(employee.id)}
                                             className="hover:text-red-500 transition"
                                         >
                                             <Trash2 className="w-4 h-4" />
