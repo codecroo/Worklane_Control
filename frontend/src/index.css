@@ -103,3 +103,8 @@ body {
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.514), rgba(255, 255, 255, 0.514), rgba(0, 0, 0, 0.829));
   border-radius: 10px;
 }
+
+input[type="date"] {
+  padding-right: 0.5rem;
+  /* or more */
+}

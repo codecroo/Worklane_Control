@@ -1,6 +1,5 @@
-// components/ProjectModal.jsx
 import { useEffect, useState } from "react";
-import { X } from "lucide-react";
+import { X as CloseIcon, X, Calendar, Users, FileText } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from "../components/ui/Button";
 import axiosInstance from "../utils/axiosInstance";
@@ -82,10 +81,15 @@ const ProjectModal = ({ onClose, onSubmit, editingProject }) => {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleEmployeesChange = (e) => {
-        setFormData({
-            ...formData,
-            employees: Array.from(e.target.selectedOptions, (option) => parseInt(option.value))
+    const toggleEmployee = (id) => {
+        setFormData((prev) => {
+            const exists = prev.employees.includes(id);
+            return {
+                ...prev,
+                employees: exists
+                    ? prev.employees.filter((eid) => eid !== id)
+                    : [...prev.employees, id],
+            };
         });
     };
 
@@ -113,6 +117,7 @@ const ProjectModal = ({ onClose, onSubmit, editingProject }) => {
                     <button
                         onClick={onClose}
                         className="absolute top-4 right-4 text-gray-400 hover:text-white transition"
+                        aria-label="Close modal"
                     >
                         <X />
                     </button>
@@ -120,49 +125,92 @@ const ProjectModal = ({ onClose, onSubmit, editingProject }) => {
                         {editingProject ? "Edit Project" : "Add Project"}
                     </h2>
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        <motion.input
-                            name="name"
-                            type="text"
-                            value={formData.name}
-                            onChange={handleChange}
-                            placeholder="Project Name"
-                            required
-                            className="w-full bg-white/10 px-4 py-2 rounded-md border border-white/20 text-white placeholder:text-gray-400"
+
+                        {/* Project Name input with icon inside */}
+                        <motion.div
+                            className="relative w-full custom-0"
                             custom={0}
                             initial="hidden"
                             animate="visible"
                             variants={inputVariants}
-                        />
+                        >
+                            <FileText
+                                size={16}
+                                className="absolute left-3 top-1/2 -translate-y-1/2 text-indigo-400 pointer-events-none"
+                            />
+                            <input
+                                name="name"
+                                type="text"
+                                value={formData.name}
+                                onChange={handleChange}
+                                placeholder="Project Name"
+                                required
+                                className="w-full bg-white/10 pl-9 py-2 rounded-md border border-white/20 text-white placeholder:text-gray-300"
+                            />
+                        </motion.div>
 
-                        <motion.input
-                            name="deadline"
-                            type="date"
-                            value={formData.deadline}
-                            onChange={handleChange}
-                            required
-                            className="w-full bg-white/10 px-4 py-2 rounded-md border border-white/20 text-white placeholder:text-gray-400"
+                        <label htmlFor="deadline" className="block mb-1 text-gray-300">Deadline</label>
+                        <motion.div
+                            className="relative w-full custom-1"
                             custom={1}
                             initial="hidden"
                             animate="visible"
                             variants={inputVariants}
-                        />
+                        >
+                            <Calendar
+                                size={16}
+                                className="absolute left-3 top-1/2 -translate-y-1/2 text-indigo-400 pointer-events-none"
+                            />
 
-                        <motion.select
-                            multiple
-                            value={formData.employees}
-                            onChange={handleEmployeesChange}
-                            className="w-full bg-white/10 px-4 py-2 rounded-md border border-white/20 text-white h-32"
+                            <input
+                                id="deadline"
+                                name="deadline"
+                                type="date"
+                                value={formData.deadline}
+                                onChange={handleChange}
+                                required
+                                className="w-full bg-white/10 pl-9 py-2 rounded-md border border-white/20 text-white"
+                            />
+                        </motion.div>
+
+
+                        {/* Employees section with icon + label */}
+                        <motion.div
+                            className="flex flex-col"
                             custom={2}
                             initial="hidden"
                             animate="visible"
                             variants={inputVariants}
                         >
-                            {employeesList.map((emp) => (
-                                <option key={emp.id} value={emp.id}>
-                                    {emp.name}
-                                </option>
-                            ))}
-                        </motion.select>
+                            <div className="flex items-center gap-2 mb-2 text-white select-none">
+                                <Users size={16} className="text-indigo-400" />
+                                <span className="font-medium">Select Team Members</span>
+                            </div>
+
+                            <div className="w-full bg-white/10 p-3 rounded-md border border-white/20 max-h-40 overflow-y-auto flex flex-wrap gap-2 text-white">
+                                {employeesList.map((emp) => {
+                                    const isSelected = formData.employees.includes(emp.id);
+                                    return (
+                                        <motion.button
+                                            key={emp.id}
+                                            type="button"
+                                            onClick={() => toggleEmployee(emp.id)}
+                                            initial={false}
+                                            animate={{
+                                                backgroundColor: isSelected ? "rgba(100,110,210,0.4)" : "transparent",
+                                                color: isSelected ? "#FFF" : "#D1D5DB",
+                                                scale: isSelected ? 1.01 : 1,
+                                                boxShadow: isSelected ? "0 0 8px rgba(99,102,241,0.6)" : "none",
+                                            }}
+                                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                                            className="px-3 py-1 rounded-full border border-white/30 cursor-pointer text-sm select-none"
+                                        >
+                                            {emp.name}
+                                        </motion.button>
+                                    );
+                                })}
+                            </div>
+                        </motion.div>
 
                         <MotionButton
                             type="submit"
