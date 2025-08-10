@@ -229,15 +229,19 @@ const ProjectModal = ({ onClose, onSubmit, editingProject }) => {
                                             onClick={() => toggleEmployee(emp.id)}
                                             initial={false}
                                             animate={{
-                                                backgroundColor: isSelected
-                                                    ? "rgba(100,110,210,0.4)"
-                                                    : "transparent",
-                                                color: isSelected ? "#FFF" : "#D1D5DB",
-                                                scale: isSelected ? 1.01 : 1,
+                                                backgroundColor: isSelected ?
+                                                    "rgba(90, 120, 230, 0.35)"
+                                                    : "rgba(90, 120, 230, 0)",
+
+                                                color: isSelected ? "#F0F4FF" : "#A8B2C9",
+                                                scale: isSelected ? 1.04 : 1,
                                                 boxShadow: isSelected
-                                                    ? "0 0 8px rgba(99,102,241,0.6)"
+                                                    ? "0 0 100px 15px rgba(110, 110, 110, 0.45)"
                                                     : "none",
                                             }}
+
+
+
                                             transition={{ type: "spring", stiffness: 300, damping: 20 }}
                                             className="px-3 py-1 rounded-full border border-white/30 cursor-pointer text-sm select-none"
                                         >
