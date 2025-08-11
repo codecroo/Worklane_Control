@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Pencil, Trash2, Plus } from "lucide-react";
+import { CheckCircle, Pencil, Trash2, Plus, Users, Calendar } from "lucide-react";
 import { typingVariants, fadeIn } from "../animation/variants";
 import { Card } from "../components/ui/Card";
 import Button from "../components/ui/Button";
@@ -42,7 +42,6 @@ const Projects = () => {
             if (editingProject) {
                 await axiosInstance.put(`/api/projects/${editingProject.id}/`, formData);
             } else {
-                console.log(formData)
                 await axiosInstance.post("/api/projects/add/", formData);
             }
             await fetchProjects();
@@ -95,10 +94,7 @@ const Projects = () => {
                         placeholder="Search projects..."
                         className="bg-white/10 border border-white/20 px-4 py-2 text-sm rounded-md backdrop-blur placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-300"
                     />
-                    <Button
-                        onClick={handleAdd}
-                        size="sm"
-                    >
+                    <Button onClick={handleAdd} size="sm" className="flex items-center gap-1">
                         <Plus className="w-4 h-4" />
                         Add Project
                     </Button>
@@ -109,7 +105,7 @@ const Projects = () => {
                 variants={fadeIn}
                 initial="hidden"
                 animate="visible"
-                className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-6"
+                className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-6"
             >
                 <AnimatePresence>
                     {filteredProjects.map((project) => (
@@ -122,33 +118,76 @@ const Projects = () => {
                             transition={{ duration: 0.2 }}
                             className="h-full"
                         >
-                            <Card className="bg-white/10 p-6 rounded-2xl border border-white/10 backdrop-blur-md h-full min-h-[200px] flex flex-col justify-between transition-colors duration-300">
+                            <Card className="bg-white/10 p-6 rounded-2xl border border-white/10 backdrop-blur-md h-full min-h-[250px] flex flex-col justify-between transition-colors duration-300">
                                 <div>
-                                    <div className="flex items-center justify-between mb-4">
+                                    <div className="flex items-center justify-between mb-3">
                                         <h3 className="font-semibold text-lg">{project.name}</h3>
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-3">
                                             <button
                                                 onClick={() => handleEdit(project)}
-                                                className="hover:text-indigo-500 transition"
+                                                className="hover:text-indigo-400 transition"
+                                                aria-label="Edit project"
                                             >
                                                 <Pencil className="w-4 h-4" />
                                             </button>
                                             <button
                                                 onClick={() => handleDelete(project.id)}
                                                 className="hover:text-red-500 transition"
+                                                aria-label="Delete project"
                                             >
                                                 <Trash2 className="w-4 h-4" />
                                             </button>
                                         </div>
                                     </div>
-                                    <p className="text-sm text-gray-300 mb-2">
-                                        Deadline: {project.deadline}
-                                    </p>
-                                    {project.employees?.length > 0 && (
-                                        <p className="text-sm text-gray-400">
-                                            Team: {project.employees.map((e) => e.name).join(", ")}
-                                        </p>
-                                    )}
+
+                                    <div className="flex items-center text-gray-400 gap-3 mb-2 text-sm">
+                                        <Users className=" w-4 h-4" />
+                                        <p>{project.employees?.map((e) => e.name).join(", ") || "No team assigned"}</p>
+                                    </div>
+
+                                    <div className="flex items-center text-gray-400 gap-3 mb-3 text-sm">
+                                        <Calendar className="w-4 h-4" />
+                                        <p>Deadline: <strong>{project.deadline}</strong></p>
+                                    </div>
+                                    {/* Progress Bar */}
+                                    <div className="mb-3">
+                                        <div className="flex justify-between mb-1 text-xs text-gray-400 font-medium tracking-wide">
+                                            <span>Progress</span>
+                                            <span>{project.progress || 0}%</span>
+                                        </div>
+                                        <div className="w-full bg-gray-800 rounded-full h-1.5 overflow-hidden">
+                                            <div
+                                                className="h-1.5 rounded-full transition-all duration-500 ease-in-out"
+                                                style={{
+                                                    width: `${project.progress || 0}%`,
+                                                    background: 'linear-gradient(10deg, green 0%, #22c55e 50%, green 100%)',
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+
+
+
+                                    {/* Tasks */}
+                                    <div className="flex flex-wrap gap-2">
+                                        {project.tasks?.map((task) => (
+                                            <button
+                                                key={task.id}
+                                                className={`flex items-center text-xs px-4 py-1 rounded-full border transition-colors duration-200 ${task.is_completed
+                                                    ? "border-green-500 text-green-500 cursor-default"
+                                                    : "border-white/50 text-white/80 hover:bg-white/20"
+                                                    }`}
+                                                disabled={task.is_completed}
+                                                title={task.name}
+                                            >
+                                                {task.is_completed && <CheckCircle className="w-4 h-4 mr-2" />}
+                                                <span>{task.name}</span>
+                                            </button>
+
+
+                                        ))}
+                                    </div>
+
                                 </div>
                             </Card>
                         </motion.div>
