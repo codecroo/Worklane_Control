@@ -40,11 +40,19 @@ const Projects = () => {
     const handleSave = async (formData) => {
         try {
             if (editingProject) {
-                await axiosInstance.put(`/api/projects/${editingProject.id}/`, formData);
+                const res = await axiosInstance.put(`/api/projects/${editingProject.id}/`, formData);
+                setProjects((prev) =>
+                    prev.map((proj) =>
+                        proj.id === editingProject.id
+                            ? res.data.data || res.data
+                            : proj
+                    )
+                );
             } else {
-                await axiosInstance.post("/api/projects/add/", formData);
+                console.log(formData);
+                const res = await axiosInstance.post("/api/projects/add/", formData);
+                setProjects((prev) => [res.data, ...prev]);
             }
-            fetchProjects();
             setIsModalOpen(false);
             setEditingProject(null);
         } catch (error) {
@@ -56,7 +64,7 @@ const Projects = () => {
         if (!window.confirm("Are you sure you want to delete this project?")) return;
         try {
             await axiosInstance.delete(`/api/projects/${id}/`);
-            fetchProjects();
+            setProjects((prev) => prev.filter((proj) => proj.id !== id));
         } catch (error) {
             console.error("Error deleting project:", error);
         }
