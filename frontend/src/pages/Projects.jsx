@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle, Pencil, Trash2, Plus, Users, Calendar } from "lucide-react";
+import {  Pencil, Trash2, Plus, Users, Calendar, CheckCircleIcon } from "lucide-react";
 import { typingVariants, fadeIn } from "../animation/variants";
 import { Card } from "../components/ui/Card";
 import Button from "../components/ui/Button";
@@ -140,15 +140,31 @@ const Projects = () => {
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center text-gray-400 gap-3 mb-2 text-sm">
-                                        <Users className=" w-4 h-4" />
-                                        <p>{project.employees?.map((e) => e.name).join(", ") || "No team assigned"}</p>
+                                    <div className="flex items-start text-gray-400 gap-3 mb-2 text-sm">
+                                        <Users className="w-4 h-4 flex-shrink-0 mt-1" />
+                                        <div>
+                                            <p className="text-white font-semibold mb-1">Team:</p>
+                                            {project.employees && project.employees.length > 0 ? (
+                                                    <ol className="list-decimal list-inside">
+                                                        {project.employees.map((e) => (
+                                                            <li key={e.id} className="whitespace-nowrap">
+                                                                {e.name}
+                                                            </li>
+                                                        ))}
+                                                    </ol>
+                                            ) : (
+                                                <p>No team assigned</p>
+                                            )}
+                                        </div>
                                     </div>
+
+
 
                                     <div className="flex items-center text-gray-400 gap-3 mb-3 text-sm">
                                         <Calendar className="w-4 h-4" />
-                                        <p>Deadline: <strong>{project.deadline}</strong></p>
+                                        <p className="text-white">Deadline: </p><strong>{project.deadline}</strong>
                                     </div>
+
                                     {/* Progress Bar */}
                                     <div className="mb-3">
                                         <div className="flex justify-between mb-1 text-xs text-gray-400 font-medium tracking-wide">
@@ -173,14 +189,14 @@ const Projects = () => {
                                         {project.tasks?.map((task) => (
                                             <button
                                                 key={task.id}
-                                                className={`flex items-center text-xs px-4 py-1 rounded-full border transition-colors duration-200 ${task.is_completed
+                                                className={`flex items-center text-xs px-3 py-1 rounded-full border-1 transition-colors duration-200 ${task.is_completed
                                                     ? "border-green-500 text-green-500 cursor-default"
                                                     : "border-white/50 text-white/80 hover:bg-white/20"
                                                     }`}
                                                 disabled={task.is_completed}
                                                 title={task.name}
                                             >
-                                                {task.is_completed && <CheckCircle className="w-4 h-4 mr-2" />}
+                                                {task.is_completed && <CheckCircleIcon className="w-4 h-4 mr-2" />}
                                                 <span>{task.name}</span>
                                             </button>
 
