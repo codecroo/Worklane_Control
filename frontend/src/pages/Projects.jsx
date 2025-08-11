@@ -40,19 +40,12 @@ const Projects = () => {
     const handleSave = async (formData) => {
         try {
             if (editingProject) {
-                const res = await axiosInstance.put(`/api/projects/${editingProject.id}/`, formData);
-                setProjects((prev) =>
-                    prev.map((proj) =>
-                        proj.id === editingProject.id
-                            ? res.data.data || res.data
-                            : proj
-                    )
-                );
+                await axiosInstance.put(`/api/projects/${editingProject.id}/`, formData);
             } else {
-                console.log(formData);
-                const res = await axiosInstance.post("/api/projects/add/", formData);
-                setProjects((prev) => [res.data, ...prev]);
+                console.log(formData)
+                await axiosInstance.post("/api/projects/add/", formData);
             }
+            await fetchProjects();
             setIsModalOpen(false);
             setEditingProject(null);
         } catch (error) {
