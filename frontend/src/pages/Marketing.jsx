@@ -1,134 +1,199 @@
-// src/pages/Marketing.jsx
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Megaphone, CalendarClock, Sparkles, Clock4 } from "lucide-react";
+import { Sparkles, Loader2, ImageIcon, Tag, Type, Palette, Download, Copy } from "lucide-react";
 import { fadeIn, typingVariants } from "../animation/variants";
 import { Card } from "../components/ui/Card";
-
-const campaigns = [
-  {
-    name: "Summer Sale",
-    status: "Scheduled",
-    date: "2025-07-25",
-    posts: 4,
-  },
-  {
-    name: "AI Launch Promo",
-    status: "Active",
-    date: "2025-07-20",
-    posts: 3,
-  },
-  {
-    name: "Product Teasers",
-    status: "Draft",
-    date: "2025-08-01",
-    posts: 2,
-  },
-];
+import Button from "../components/ui/Button";
 
 const Marketing = () => {
-  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [prompt, setPrompt] = useState("");
+  const [style, setStyle] = useState("Modern");
+  const [colorTheme, setColorTheme] = useState("Vibrant");
+  const [format, setFormat] = useState("Poster");
+  const [result, setResult] = useState(null);
 
-  const filtered = campaigns.filter((c) =>
-    c.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const handleGenerate = () => {
+    if (!prompt.trim()) {
+      alert("Please enter a prompt.");
+      return;
+    }
+    setLoading(true);
+    setResult(null);
+
+    setTimeout(() => {
+      setResult({
+        imageUrl: "https://via.placeholder.com/600x400?text=Generated+Poster",
+        caption: "Amazing poster generated based on your prompt!",
+        hashtags: "#marketing #poster #branding",
+        style,
+      });
+      setLoading(false);
+    }, 2000);
+  };
+
+  const handleDownload = () => {
+    if (result?.imageUrl) {
+      const link = document.createElement("a");
+      link.href = result.imageUrl;
+      link.download = "poster.png";
+      link.click();
+    }
+  };
+
+  const handleCopy = (text) => {
+    navigator.clipboard.writeText(text);
+  };
 
   return (
-    <div className="min-h-screen bg-black text-white pb-20 px-6 pt-10 max-w-[1440px] mx-auto">
-      {/* Heading */}
+    <div className="min-h-screen bg-black text-white px-6 pt-10 max-w-[1200px] mx-auto">
+      {/* Title */}
       <motion.h1
         variants={typingVariants}
         initial="hidden"
         animate="visible"
         className="text-4xl font-bold inline-block overflow-hidden whitespace-nowrap leading-tight pb-2"
       >
-        Marketing
+        Poster Generator
       </motion.h1>
 
-      {/* Description and Search */}
-      <motion.div
-        variants={fadeIn}
-        initial="hidden"
-        animate="visible"
-        className="flex justify-between items-center mt-4 mb-8 flex-wrap gap-4"
-      >
+      {/* Intro */}
+      <motion.div variants={fadeIn} initial="hidden" animate="visible" className="mt-4 mb-8">
         <p className="text-sm text-gray-400 max-w-xl">
-          Plan, generate, and track marketing campaigns and content across platforms.
+          Instantly create branded posters with captions and hashtags tailored to your style.
         </p>
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search campaigns..."
-          className="bg-white/10 border border-white/20 px-4 py-2 text-sm rounded-md backdrop-blur placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-300"
-        />
       </motion.div>
 
-      {/* Grid Sections */}
-      <motion.div
-        variants={fadeIn}
-        initial="hidden"
-        animate="visible"
-        className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6"
-      >
-        {/* Campaigns */}
-        {filtered.map((camp, idx) => (
-          <motion.div
-            key={idx}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: idx * 0.05 }}
-          >
-            <Card className="bg-white/10 p-6 rounded-2xl border border-white/10 backdrop-blur-md transition-transform hover:scale-[1.01] duration-300">
-              <div className="flex items-center gap-3 mb-3">
-                <Megaphone className="w-5 h-5 text-green-400" />
-                <h2 className="text-lg font-semibold">{camp.name}</h2>
+      {/* Content */}
+      <motion.div variants={fadeIn} initial="hidden" animate="visible" className="grid lg:grid-cols-2 gap-10">
+        {/* Left: Controls */}
+        <div className="space-y-6">
+          {/* Prompt Textbox */}
+          <textarea
+            rows={4}
+            className="w-full p-4 rounded-md bg-white/5 border border-white/20 text-white placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            placeholder="Describe your poster idea..."
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            disabled={loading}
+          />
+
+          {/* Dropdowns */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {[
+              { value: style, setter: setStyle, options: ["Modern", "Minimalist", "Vintage", "Futuristic"] },
+              { value: colorTheme, setter: setColorTheme, options: ["Vibrant", "Pastel", "Monochrome", "Dark Mode"] },
+              { value: format, setter: setFormat, options: ["Poster", "Flyer", "Social Media Post", "Billboard"] },
+            ].map((dropdown, idx) => (
+              <select
+                key={idx}
+                value={dropdown.value}
+                onChange={(e) => dropdown.setter(e.target.value)}
+                className="w-full bg-white/10 backdrop-blur-md border border-white/20 p-3 rounded-lg text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-400 hover:bg-white/20 transition-all duration-200 cursor-pointer"
+                disabled={loading}
+              >
+                {dropdown.options.map((opt) => (
+                  <option key={opt} className="bg-black text-white">
+                    {opt}
+                  </option>
+                ))}
+              </select>
+            ))}
+          </div>
+
+          {/* Generate Button */}
+          <Button className="w-full py-3 font-medium rounded-md flex items-center justify-center gap-2" onClick={handleGenerate} disabled={loading}>
+            {loading ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Generating...
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-5 h-5" />
+                Generate Poster
+              </>
+            )}
+          </Button>
+        </div>
+
+        {/* Right: Preview */}
+        <div className="space-y-6">
+          <Card className="relative rounded-2xl overflow-hidden border border-white/20 shadow-lg">
+            {loading ? (
+              <div className="flex items-center justify-center h-64 bg-white/10">
+                <Loader2 className="w-10 h-10 animate-spin text-gray-400" />
               </div>
-              <p className="text-sm text-gray-300 mb-2">Status: <span className="text-white">{camp.status}</span></p>
-              <p className="text-sm text-gray-300 mb-2">Scheduled: {camp.date}</p>
-              <p className="text-sm text-gray-300">Posts: {camp.posts}</p>
-            </Card>
-          </motion.div>
-        ))}
+            ) : result ? (
+              <>
+                <img src={result.imageUrl} alt="Generated poster" className="w-full object-cover max-h-[400px]" />
+                <button
+                  onClick={handleDownload}
+                  className="absolute top-4 right-4 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full backdrop-blur-md transition"
+                  title="Download Poster"
+                >
+                  <Download className="w-5 h-5" />
+                </button>
+              </>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-64 text-gray-500">
+                <ImageIcon className="w-10 h-10 mb-2" />
+                No poster generated yet.
+              </div>
+            )}
+          </Card>
 
-        {/* AI Poster Generator */}
-        <Card className="bg-gradient-to-br from-blue-700/20 to-purple-700/10 p-6 rounded-2xl border border-white/10 backdrop-blur-md transition-transform hover:scale-[1.01] duration-300">
-          <div className="flex items-center gap-3 mb-3">
-            <Sparkles className="w-5 h-5 text-violet-400" />
-            <h2 className="text-lg font-semibold">AI Poster Generator</h2>
-          </div>
-          <p className="text-sm text-gray-300 mb-2">
-            Instantly create engaging marketing posters based on your campaign goals.
-          </p>
-          <button className="mt-4 bg-white/10 border border-white/20 rounded-md px-4 py-2 text-sm hover:bg-white/20 transition">
-            Generate Poster
-          </button>
-        </Card>
+          {result && (
+            <div className="grid sm:grid-cols-3 gap-4">
+              {/* Caption */}
+              <Card className="p-4 bg-white/5 relative">
+                <div className="flex items-center gap-2 mb-2">
+                  <Type className="w-4 h-4 text-indigo-400" />
+                  <h3 className="font-semibold text-sm">Caption</h3>
+                  <button
+                    onClick={() => handleCopy(result.caption)}
+                    className="ml-auto text-gray-400 hover:text-white transition"
+                    title="Copy Caption"
+                  >
+                    <Copy className="w-4 h-4" />
+                  </button>
+                </div>
+                <p className="text-gray-300 text-sm">{result.caption}</p>
+              </Card>
 
-        {/* Upcoming Scheduled Posts */}
-        <Card className="bg-white/5 p-6 rounded-2xl border border-white/10 backdrop-blur-md transition-transform hover:scale-[1.01] duration-300">
-          <div className="flex items-center gap-3 mb-3">
-            <CalendarClock className="w-5 h-5 text-yellow-400" />
-            <h2 className="text-lg font-semibold">Scheduled Posts</h2>
-          </div>
-          <ul className="text-sm text-gray-300 space-y-1">
-            <li>• Instagram: “🔥 AI Launch” - 20 July</li>
-            <li>• LinkedIn: “Team Spotlight” - 21 July</li>
-            <li>• Twitter: “Behind the Scenes” - 22 July</li>
-          </ul>
-        </Card>
+              {/* Hashtags */}
+              <Card className="p-4 bg-white/5 relative">
+                <div className="flex items-center gap-2 mb-2">
+                  <Tag className="w-4 h-4 text-indigo-400" />
+                  <h3 className="font-semibold text-sm">Hashtags</h3>
+                  <button
+                    onClick={() => handleCopy(result.hashtags)}
+                    className="ml-auto text-gray-400 hover:text-white transition"
+                    title="Copy Hashtags"
+                  >
+                    <Copy className="w-4 h-4" />
+                  </button>
+                </div>
+                <p className="text-gray-400 text-sm">{result.hashtags}</p>
+              </Card>
 
-        {/* Content Queue */}
-        <Card className="bg-white/5 p-6 rounded-2xl border border-white/10 backdrop-blur-md transition-transform hover:scale-[1.01] duration-300">
-          <div className="flex items-center gap-3 mb-3">
-            <Clock4 className="w-5 h-5 text-cyan-400" />
-            <h2 className="text-lg font-semibold">Content Queue</h2>
-          </div>
-          <p className="text-sm text-gray-300 mb-2">3 posts are in draft stage waiting for review.</p>
-          <button className="mt-2 bg-white/10 border border-white/20 rounded-md px-4 py-2 text-sm hover:bg-white/20 transition">
-            Review Content
-          </button>
-        </Card>
+              {/* Style */}
+              <Card className="p-4 bg-white/5">
+                <div className="flex items-center gap-2 mb-2">
+                  <Palette className="w-4 h-4 text-indigo-400" />
+                  <h3 className="font-semibold text-sm">Style</h3>
+                </div>
+                <p className="text-gray-400 text-sm">{result.style}</p>
+              </Card>
+            </div>
+          )}
+
+          {result && (
+            <Button className="w-full" onClick={() => { setResult(null); setPrompt(""); }}>
+              Generate Another Poster
+            </Button>
+          )}
+        </div>
       </motion.div>
     </div>
   );
