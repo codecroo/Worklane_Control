@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {  Pencil, Trash2, Plus, Users, Calendar, CheckCircleIcon } from "lucide-react";
+import { Pencil, Trash2, Plus, Users, Calendar, CheckCircleIcon } from "lucide-react";
 import { typingVariants, fadeIn } from "../animation/variants";
 import { Card } from "../components/ui/Card";
 import Button from "../components/ui/Button";
@@ -145,13 +145,13 @@ const Projects = () => {
                                         <div>
                                             <p className="text-white font-semibold mb-1">Team:</p>
                                             {project.employees && project.employees.length > 0 ? (
-                                                    <ol className="list-decimal list-inside">
-                                                        {project.employees.map((e) => (
-                                                            <li key={e.id} className="whitespace-nowrap">
-                                                                {e.name}
-                                                            </li>
-                                                        ))}
-                                                    </ol>
+                                                <ol className="list-decimal list-inside">
+                                                    {project.employees.map((e) => (
+                                                        <li key={e.id} className="whitespace-nowrap">
+                                                            {e.name}
+                                                        </li>
+                                                    ))}
+                                                </ol>
                                             ) : (
                                                 <p>No team assigned</p>
                                             )}
