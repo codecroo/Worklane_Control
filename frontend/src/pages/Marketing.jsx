@@ -23,7 +23,7 @@ const Marketing = () => {
 
     setTimeout(() => {
       setResult({
-        imageUrl: "https://via.placeholder.com/600x400?text=Generated+Poster",
+        imageUrl: "https://cdn.pixabay.com/photo/2015/04/23/22/00/new-year-background-736885_1280.jpg",
         caption: "Amazing poster generated based on your prompt!",
         hashtags: "#marketing #poster #branding",
         style,
@@ -118,22 +118,28 @@ const Marketing = () => {
         </div>
 
         {/* Right: Preview */}
-        <div className="space-y-6">
-          <Card className="relative rounded-2xl overflow-hidden border border-white/20 shadow-lg">
+        <div className="space-y-4">
+          <Card className="rounded-2xl overflow-hidden border border-white/20 shadow-lg">
             {loading ? (
               <div className="flex items-center justify-center h-64 bg-white/10">
                 <Loader2 className="w-10 h-10 animate-spin text-gray-400" />
               </div>
             ) : result ? (
               <>
-                <img src={result.imageUrl} alt="Generated poster" className="w-full object-cover max-h-[400px]" />
-                <button
-                  onClick={handleDownload}
-                  className="absolute top-4 right-4 bg-white/20 hover:bg-white/30 text-white p-2 rounded-full backdrop-blur-md transition"
-                  title="Download Poster"
-                >
-                  <Download className="w-5 h-5" />
-                </button>
+                <img
+                  src={result.imageUrl}
+                  alt="Generated poster"
+                  className="w-full object-cover max-h-[400px]"
+                />
+                <div className="p-3">
+                  <Button
+                    className="w-full flex items-center justify-center gap-2"
+                    onClick={handleDownload}
+                  >
+                    <Download className="w-5 h-5" />
+                    Download Poster
+                  </Button>
+                </div>
               </>
             ) : (
               <div className="flex flex-col items-center justify-center h-64 text-gray-500">
@@ -143,39 +149,44 @@ const Marketing = () => {
             )}
           </Card>
 
+
           {result && (
             <div className="grid sm:grid-cols-3 gap-4">
               {/* Caption */}
-              <Card className="p-4 bg-white/5 relative">
-                <div className="flex items-center gap-2 mb-2">
-                  <Type className="w-4 h-4 text-indigo-400" />
-                  <h3 className="font-semibold text-sm">Caption</h3>
-                  <button
-                    onClick={() => handleCopy(result.caption)}
-                    className="ml-auto text-gray-400 hover:text-white transition"
-                    title="Copy Caption"
-                  >
-                    <Copy className="w-4 h-4" />
-                  </button>
+              <Card className="p-4 bg-white/5 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Type className="w-4 h-4 text-indigo-400" />
+                    <h3 className="font-semibold text-sm">Caption</h3>
+                  </div>
+                  <p className="text-gray-300 text-sm flex-1">{result.caption}</p>
                 </div>
-                <p className="text-gray-300 text-sm">{result.caption}</p>
+                <Button
+                  size="sm"
+                  className="mt-4 flex items-center justify-center"
+                  onClick={() => handleCopy(result.caption)}
+                >
+                  Copy Caption
+                </Button>
               </Card>
 
               {/* Hashtags */}
-              <Card className="p-4 bg-white/5 relative">
-                <div className="flex items-center gap-2 mb-2">
-                  <Tag className="w-4 h-4 text-indigo-400" />
-                  <h3 className="font-semibold text-sm">Hashtags</h3>
-                  <button
-                    onClick={() => handleCopy(result.hashtags)}
-                    className="ml-auto text-gray-400 hover:text-white transition"
-                    title="Copy Hashtags"
-                  >
-                    <Copy className="w-4 h-4" />
-                  </button>
+              <Card className="p-4 bg-white/5 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Tag className="w-4 h-4 text-indigo-400" />
+                    <h3 className="font-semibold text-sm">Hashtags</h3>
+                  </div>
+                  <p className="text-gray-400 text-sm flex-1">{result.hashtags}</p>
                 </div>
-                <p className="text-gray-400 text-sm">{result.hashtags}</p>
+                <Button
+                  size="sm"
+                  onClick={() => handleCopy(result.hashtags)}
+                >
+                  Copy Hashtags
+                </Button>
               </Card>
+
 
               {/* Style */}
               <Card className="p-4 bg-white/5">
