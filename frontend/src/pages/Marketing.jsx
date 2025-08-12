@@ -109,41 +109,48 @@ const Marketing = () => {
           <div className="grid grid-cols-1 gap-4">
             {[
               {
+                label: "Style",
                 value: style,
                 setter: setStyle,
                 options: ["Modern", "Minimalist", "Vintage", "Futuristic"],
               },
               {
+                label: "Color Theme",
                 value: colorTheme,
                 setter: setColorTheme,
                 options: ["Vibrant", "Pastel", "Monochrome", "Dark Mode"],
               },
               {
+                label: "Format",
                 value: format,
                 setter: setFormat,
-                options: [
-                  "Poster",
-                  "Flyer",
-                  "Social Media Post",
-                  "Billboard",
-                ],
+                options: ["Poster", "Flyer", "Social Media Post", "Billboard"],
               },
             ].map((dropdown, idx) => (
-              <select
-                key={idx}
-                value={dropdown.value}
-                onChange={(e) => dropdown.setter(e.target.value)}
-                className="w-full bg-white/10 backdrop-blur-md border border-white/20 p-3 rounded-lg text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-400 hover:bg-white/20 transition-all duration-200 cursor-pointer"
-                disabled={loading}
-              >
-                {dropdown.options.map((opt) => (
-                  <option key={opt} className="bg-black text-white">
-                    {opt}
-                  </option>
-                ))}
-              </select>
+              <div key={idx} className="flex flex-col gap-2">
+                <label
+                  className="text-sm font-medium text-gray-300"
+                  htmlFor={`dropdown-${idx}`}
+                >
+                  {dropdown.label}
+                </label>
+                <select
+                  id={`dropdown-${idx}`}
+                  value={dropdown.value}
+                  onChange={(e) => dropdown.setter(e.target.value)}
+                  className="w-full bg-white/10 backdrop-blur-md border border-white/20 p-3 rounded-lg text-sm text-white focus:outline-none focus:ring-1 focus:ring-indigo-400 hover:bg-white/20 transition-all duration-200 cursor-pointer"
+                  disabled={loading}
+                >
+                  {dropdown.options.map((opt) => (
+                    <option key={opt} className="bg-black text-white">
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+              </div>
             ))}
           </div>
+
 
           {/* Generate Button */}
           <Button

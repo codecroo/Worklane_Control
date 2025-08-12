@@ -41,7 +41,7 @@ button:hover {
 
 /* === Global Selection Color === */
 ::selection {
-  background-color: rgba(255, 255, 255, 0.616);
+  background-color: rgb(255, 255, 255);
   /* Tailwind blue-500/30 */
   color: rgb(0, 0, 0);
 }
