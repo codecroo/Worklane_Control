@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles,
@@ -9,10 +9,12 @@ import {
   Palette,
   Download,
   Clock,
+  Trash2
 } from "lucide-react";
 import { fadeIn, typingVariants } from "../animation/variants";
 import { Card } from "../components/ui/Card";
 import Button from "../components/ui/Button";
+import axiosInstance from "../utils/axiosInstance";
 
 const Marketing = () => {
   const [loading, setLoading] = useState(false);
@@ -23,27 +25,51 @@ const Marketing = () => {
   const [result, setResult] = useState(null);
   const [recentPosts, setRecentPosts] = useState([]);
 
-  const handleGenerate = () => {
+  const fetchRecentPosts = async () => {
+    try {
+      const res = await axiosInstance.get("/api/marketing/recent/");
+      setRecentPosts(res.data);
+    } catch (error) {
+      console.error("Error fetching recent posts:", error);
+    }
+  };
+
+  const handleGenerate = async () => {
     if (!prompt.trim()) {
       alert("Please enter a prompt.");
       return;
     }
+
     setLoading(true);
     setResult(null);
 
-    setTimeout(() => {
-      const newPost = {
-        imageUrl:
-          "https://cdn.pixabay.com/photo/2015/04/23/22/00/new-year-background-736885_1280.jpg",
-        caption: "Amazing poster generated based on your prompt!",
-        hashtags: "#marketing #poster #branding",
+    try {
+      const res = await axiosInstance.post("/api/marketing/", {
+        prompt,
         style,
-        bestTime: "6:00 PM",
-      };
+        colorTheme,
+        format,
+      });
+
+      const newPost = res.data;
       setResult(newPost);
       setRecentPosts((prev) => [newPost, ...prev]);
+    } catch (error) {
+      console.error("Generation failed:", error);
+      alert("Failed to generate poster. Please try again.");
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
+  };
+
+  const handleDeleteRecentPost = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this post?")) return;
+    try {
+      await axiosInstance.delete(`/api/marketing/${id}/`);
+      setRecentPosts((prev) => prev.filter((p) => p.id !== id));
+    } catch (err) {
+      console.error("Error deleting post:", err);
+    }
   };
 
   const handleDownload = () => {
@@ -59,6 +85,10 @@ const Marketing = () => {
     navigator.clipboard.writeText(text);
   };
 
+  useEffect(() => {
+    fetchRecentPosts();
+  }, []);
+
   return (
     <div className="min-h-screen bg-black text-white px-6 pt-10 pb-40 max-w-[1400px] mx-auto">
       {/* Title */}
@@ -70,6 +100,7 @@ const Marketing = () => {
       >
         Poster Generator
       </motion.h1>
+
       {/* Intro */}
       <motion.p
         variants={fadeIn}
@@ -150,7 +181,6 @@ const Marketing = () => {
               </div>
             ))}
           </div>
-
 
           {/* Generate Button */}
           <Button
@@ -254,7 +284,7 @@ const Marketing = () => {
         >
           {result ? (
             <>
-              {[ // Mapping for cleaner animations
+              {[
                 {
                   icon: <Type className="w-4 h-4 text-indigo-400" />,
                   title: "Caption",
@@ -342,12 +372,12 @@ const Marketing = () => {
           >
             <h2 className="text-xl font-semibold mb-4">Recent Posts</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {recentPosts.map((post, idx) => (
+              {recentPosts.map((post) => (
                 <motion.div
-                  key={idx}
+                  key={post.id}
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.1 }}
+                  transition={{ delay: 0.1 }}
                 >
                   <Card className="p-4 bg-white/5 flex flex-col border border-white/20 rounded-lg">
                     <img
@@ -364,9 +394,17 @@ const Marketing = () => {
                     <p className="text-sm text-gray-400 mb-1">
                       <strong>Style:</strong> {post.style}
                     </p>
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm text-gray-400 mb-3">
                       <strong>Best Time:</strong> {post.bestTime}
                     </p>
+                    <Button
+                      size="sm"
+                      className="bg-red-500/20 text-red-400 hover:bg-red-500/30 mt-auto"
+                      onClick={() => handleDeleteRecentPost(post.id)}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Delete
+                    </Button>
                   </Card>
                 </motion.div>
               ))}
