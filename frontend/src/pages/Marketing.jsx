@@ -7,8 +7,8 @@ import Button from "../components/ui/Button";
 import axiosInstance from "../utils/axiosInstance";
 
 const dropdownVariant = {
-  hidden: { opacity: 0, y: -5 },
-  visible: { opacity: 1, y: 0 }
+  hidden: { opacity: 0, y: -7 },
+  visible: { opacity: 1, y: 0 },
 };
 
 const Marketing = () => {
@@ -17,7 +17,6 @@ const Marketing = () => {
   const [result, setResult] = useState(null);
   const [recentPosts, setRecentPosts] = useState([]);
 
-  // Dropdown states
   const [industry, setIndustry] = useState("");
   const [designStyle, setDesignStyle] = useState("");
   const [tone, setTone] = useState("");
@@ -32,28 +31,21 @@ const Marketing = () => {
   };
 
   const handleGenerate = async () => {
-    if (!prompt.trim()) {
-      alert("Please enter a prompt.");
-      return;
-    }
+    if (!prompt.trim()) return alert("Please enter a prompt.");
     setLoading(true);
     setResult(null);
-
     try {
-
       const formData = new FormData();
       formData.append("prompt", prompt);
       formData.append("industry", industry);
       formData.append("design_style", designStyle);
       formData.append("tone", tone);
-      
       const res = await axiosInstance.post("/api/marketing/add/", formData);
-      const newPost = res.data;
-      setResult(newPost);
-      setRecentPosts((prev) => [newPost, ...prev]);
-    } catch (error) {
-      console.error("Generation failed:", error);
-      alert("Failed to generate poster. Please try again.");
+      setResult(res.data);
+      setRecentPosts((prev) => [res.data, ...prev]);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to generate poster");
     } finally {
       setLoading(false);
     }
@@ -65,7 +57,7 @@ const Marketing = () => {
       await axiosInstance.delete(`/api/marketing/delete/${id}/`);
       setRecentPosts((prev) => prev.filter((p) => p.id !== id));
     } catch (err) {
-      console.error("Error deleting post:", err);
+      console.error(err);
     }
   };
 
@@ -83,31 +75,29 @@ const Marketing = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black text-white px-6 pt-10 pb-40 max-w-[1400px] mx-auto">
-      {/* Title */}
+    <div className="min-h-screen bg-black text-white relative pb-20 px-6 pt-10 max-w-[1440px] mx-auto">
+      {/* Heading */}
       <motion.h1
         variants={typingVariants}
         initial="hidden"
         animate="visible"
-        className="text-4xl font-bold leading-tight pb-2"
+        className="text-4xl font-bold inline-block overflow-hidden whitespace-nowrap leading-tight pb-2"
       >
         Poster Generator
       </motion.h1>
 
-      {/* Intro */}
-      <motion.p
+      <motion.div
         variants={fadeIn}
         initial="hidden"
         animate="visible"
-        transition={{ delay: 0.8, duration: 0.6 }}
-        className="mt-4 mb-8 text-sm text-gray-400 max-w-xl"
+        className="flex justify-between items-center mt-4 mb-8 flex-wrap gap-4"
       >
         Instantly create branded posters with style and precision.
-      </motion.p>
+      </motion.div>
 
       {/* Main layout */}
       <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6">
-        {/* Prompt + dropdowns */}
+        {/* Left: Prompt & Dropdowns */}
         <div className="space-y-6">
           <textarea
             rows={4}
@@ -118,70 +108,64 @@ const Marketing = () => {
             disabled={loading}
           />
 
-          {/* Dropdowns with animation */}
-          <div className="space-y-4">
-            <motion.div variants={dropdownVariant} initial="hidden" animate="visible" transition={{ delay: 0.1 }}>
-              <div className="flex items-center bg-white/5 backdrop-blur-md border border-white/20 rounded-xl shadow-lg hover:border-indigo-500 transition-all">
-                <Briefcase className="w-5 h-5 ml-3 text-indigo-400" />
-                <select
-                  className="flex-1 p-3 bg-transparent outline-none text-white cursor-pointer"
-                  value={industry}
-                  onChange={(e) => setIndustry(e.target.value)}
-                >
-                  <option className="bg-black" value="">Select Industry</option>
-                  <option className="bg-black">Technology</option>
-                  <option className="bg-black">Food & Beverage</option>
-                  <option className="bg-black">Real Estate</option>
-                  <option className="bg-black">Health & Wellness</option>
-                  <option className="bg-black">Fashion & Retail</option>
-                  <option className="bg-black">Education</option>
-                  <option className="bg-black">Finance</option>
-                </select>
-              </div>
-            </motion.div>
+          {/* Dropdowns */}
+          <motion.div variants={dropdownVariant} initial="hidden" animate="visible" transition={{ delay: 0.1 }}>
+            <div className="flex items-center bg-white/5 backdrop-blur-md border border-white/20 rounded-xl shadow-lg hover:border-indigo-500 transition-all">
+              <Briefcase className="w-5 h-5 ml-3 text-indigo-400" />
+              <select
+                className="flex-1 p-3 bg-transparent outline-none text-white cursor-pointer"
+                value={industry}
+                onChange={(e) => setIndustry(e.target.value)}
+              >
+                <option className="bg-black" value="">Select Industry</option>
+                <option className="bg-black">Technology</option>
+                <option className="bg-black">Food & Beverage</option>
+                <option className="bg-black">Real Estate</option>
+                <option className="bg-black">Health & Wellness</option>
+                <option className="bg-black">Fashion & Retail</option>
+                <option className="bg-black">Education</option>
+                <option className="bg-black">Finance</option>
+              </select>
+            </div>
+          </motion.div>
 
-            <motion.div variants={dropdownVariant} initial="hidden" animate="visible" transition={{ delay: 0.2 }}>
-              <div className="flex items-center bg-white/5 backdrop-blur-md border border-white/20 rounded-xl shadow-lg hover:border-indigo-500 transition-all">
-                <Palette className="w-5 h-5 ml-3 text-pink-400" />
-                <select
-                  className="flex-1 p-3 bg-transparent outline-none text-white cursor-pointer"
-                  value={designStyle}
-                  onChange={(e) => setDesignStyle(e.target.value)}
-                >
-                  <option className="bg-black" value="">Select Design Style</option>
-                  <option className="bg-black">Modern & Sleek</option>
-                  <option className="bg-black">Minimalist & Clean</option>
-                  <option className="bg-black">Bold & Attention-Grabbing</option>
-                  <option className="bg-black">Corporate & Professional</option>
-                  <option className="bg-black">Creative & Artistic</option>
-                </select>
-              </div>
-            </motion.div>
+          <motion.div variants={dropdownVariant} initial="hidden" animate="visible" transition={{ delay: 0.2 }}>
+            <div className="flex items-center bg-white/5 backdrop-blur-md border border-white/20 rounded-xl shadow-lg hover:border-indigo-500 transition-all">
+              <Palette className="w-5 h-5 ml-3 text-pink-400" />
+              <select
+                className="flex-1 p-3 bg-transparent outline-none text-white cursor-pointer"
+                value={designStyle}
+                onChange={(e) => setDesignStyle(e.target.value)}
+              >
+                <option className="bg-black" value="">Select Design Style</option>
+                <option className="bg-black">Modern & Sleek</option>
+                <option className="bg-black">Minimalist & Clean</option>
+                <option className="bg-black">Bold & Attention-Grabbing</option>
+                <option className="bg-black">Corporate & Professional</option>
+                <option className="bg-black">Creative & Artistic</option>
+              </select>
+            </div>
+          </motion.div>
 
-            <motion.div variants={dropdownVariant} initial="hidden" animate="visible" transition={{ delay: 0.3 }}>
-              <div className="flex items-center bg-white/5 backdrop-blur-md border border-white/20 rounded-xl shadow-lg hover:border-indigo-500 transition-all">
-                <Target className="w-5 h-5 ml-3 text-green-400" />
-                <select
-                  className="flex-1 p-3 bg-transparent outline-none text-white cursor-pointer"
-                  value={tone}
-                  onChange={(e) => setTone(e.target.value)}
-                >
-                  <option className="bg-black" value="">Select Purpose</option>
-                  <option className="bg-black">Product Launch</option>
-                  <option className="bg-black">Discount / Sale Announcement</option>
-                  <option className="bg-black">Event Promotion</option>
-                  <option className="bg-black">Brand Awareness</option>
-                  <option className="bg-black">Recruitment / Hiring</option>
-                </select>
-              </div>
-            </motion.div>
-          </div>
+          <motion.div variants={dropdownVariant} initial="hidden" animate="visible" transition={{ delay: 0.3 }}>
+            <div className="flex items-center bg-white/5 backdrop-blur-md border border-white/20 rounded-xl shadow-lg hover:border-indigo-500 transition-all">
+              <Target className="w-5 h-5 ml-3 text-green-400" />
+              <select
+                className="flex-1 p-3 bg-transparent outline-none text-white cursor-pointer"
+                value={tone}
+                onChange={(e) => setTone(e.target.value)}
+              >
+                <option className="bg-black" value="">Select Purpose</option>
+                <option className="bg-black">Product Launch</option>
+                <option className="bg-black">Discount / Sale Announcement</option>
+                <option className="bg-black">Event Promotion</option>
+                <option className="bg-black">Brand Awareness</option>
+                <option className="bg-black">Recruitment / Hiring</option>
+              </select>
+            </div>
+          </motion.div>
 
-          <Button
-            className="w-full "
-            onClick={handleGenerate}
-            disabled={loading}
-          >
+          <Button className="w-full" onClick={handleGenerate} disabled={loading}>
             {loading ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -196,7 +180,7 @@ const Marketing = () => {
           </Button>
         </div>
 
-        {/* Right: Preview */}
+        {/* Right: Poster Preview */}
         <Card className="rounded-2xl overflow-hidden border border-white/20 shadow-lg">
           <AnimatePresence mode="wait">
             {loading ? (
@@ -223,10 +207,7 @@ const Marketing = () => {
                   className="w-full h-auto max-h-[70vh] object-contain"
                 />
                 <div className="p-3">
-                  <Button
-                    className="w-full flex items-center justify-center gap-2"
-                    onClick={handleDownload}
-                  >
+                  <Button className="w-full flex items-center justify-center gap-2" onClick={handleDownload}>
                     <Download className="w-5 h-5" />
                     Download Poster
                   </Button>
@@ -256,24 +237,31 @@ const Marketing = () => {
         <div className="mt-10">
           <h2 className="text-xl font-semibold mb-4">Recent Posters</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {recentPosts.map((post) => (
-              <Card key={post.id} className="p-4 bg-white/5 flex flex-col border border-white/20 rounded-lg">
-                <img
-                  src={post.image}
-                  alt="Recent poster"
-                  className="w-full object-cover rounded-lg mb-3 bg-white/10 max-h-60"
-                />
-                <p className="text-sm text-gray-300 mb-3">{post.prompt}</p>
-                <Button
-                  size="sm"
-                  variant="danger"
-                  onClick={() => handleDeleteRecentPost(post.id)}
+            <AnimatePresence>
+              {recentPosts.map((post) => (
+                <motion.div
+                  key={post.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <Trash2 className="w-4 h-4" />
-                  Delete
-                </Button>
-              </Card>
-            ))}
+                  <Card className="p-4 bg-white/5 flex flex-col border border-white/20 rounded-lg">
+                    <img
+                      src={post.image}
+                      alt="Recent poster"
+                      className="w-full object-cover rounded-lg mb-3 bg-white/10 max-h-60"
+                    />
+                    <p className="text-sm text-gray-300 mb-3">{post.prompt}</p>
+                    <Button size="sm" variant="danger" onClick={() => handleDeleteRecentPost(post.id)}>
+                      <Trash2 className="w-4 h-4" />
+                      Delete
+                    </Button>
+                  </Card>
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
         </div>
       )}
