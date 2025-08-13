@@ -217,14 +217,15 @@ const Marketing = () => {
                     <img
                       src={post.image}
                       alt="Recent poster"
-                      className="w-full h-40 object-cover rounded-md mb-3"
+                      className="w-full object-contain rounded-lg mb-3 bg-white/10 aspect-[3/4] max-h-45"
                     />
+
                     <p className="text-sm text-gray-300 mb-3">
                       {post.prompt}
                     </p>
                     <Button
                       size="sm"
-                      className="bg-red-500/20 text-red-400 hover:bg-red-500/30 mt-auto"
+                      variant="danger"
                       onClick={() => handleDeleteRecentPost(post.id)}
                     >
                       <Trash2 className="w-4 h-4" />

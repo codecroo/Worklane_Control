@@ -12,27 +12,43 @@ from .models import Poster
 from .serializers import PosterSerializer
 from .services import generate_poster_image
 
+
 class PosterCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        serializer = PosterSerializer(data=request.data, context={'request': request})
-        if serializer.is_valid():
-            prompt = serializer.validated_data['prompt']
-            filename = f"poster_{request.user.id}_{uuid.uuid4().hex}.png"
-            save_path = os.path.join(settings.MEDIA_ROOT, 'generated_posters', filename)
-            os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        # Get original prompt (short, clean) from request
+        original_prompt = request.data.get("prompt", "").strip()
 
-            async_to_sync(generate_poster_image)(prompt, save_path)
+        if not original_prompt:
+            return Response({"error": "Prompt is required."}, status=status.HTTP_400_BAD_REQUEST)
 
-            poster = Poster.objects.create(
-                user=request.user,
-                prompt=prompt,
-                image=f"generated_posters/{filename}"
-            )
+        # Prepare enhanced prompt for generation only
+        enhanced_prompt = (
+            original_prompt +
+            " Enhance the prompt, Enhance details, focus on clarity of any text if there is any, "
+            "and add creative/artistic elements if necessary."
+        )
 
-            return Response(PosterSerializer(poster, context={'request': request}).data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # Generate image
+        filename = f"poster_{request.user.id}_{uuid.uuid4().hex}.png"
+        save_path = os.path.join(settings.MEDIA_ROOT, 'generated_posters', filename)
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+
+        async_to_sync(generate_poster_image)(enhanced_prompt, save_path)
+
+        # Save only the original prompt in DB
+        poster = Poster.objects.create(
+            user=request.user,
+            prompt=original_prompt,
+            image=f"generated_posters/{filename}"
+        )
+
+        return Response(
+            PosterSerializer(poster, context={'request': request}).data,
+            status=status.HTTP_201_CREATED
+        )
+
 
 class PosterListView(APIView):
     permission_classes = [IsAuthenticated]
@@ -41,6 +57,7 @@ class PosterListView(APIView):
         posters = Poster.objects.filter(user=request.user).order_by('-created_at')
         serializer = PosterSerializer(posters, many=True, context={'request': request})
         return Response(serializer.data)
+
 
 class PosterDeleteView(APIView):
     permission_classes = [IsAuthenticated]
