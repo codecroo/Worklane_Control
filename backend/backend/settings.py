@@ -14,8 +14,8 @@ from pathlib import Path
 from datetime import timedelta #
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),    
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),       
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60), #  
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),    #  
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
     "AUTH_HEADER_TYPES": ("Bearer",),
@@ -150,3 +150,9 @@ REST_FRAMEWORK = {
 
 #
 CORS_ALLOW_ALL_ORIGINS = True
+
+import os
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+

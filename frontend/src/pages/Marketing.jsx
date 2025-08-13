@@ -27,7 +27,7 @@ const Marketing = () => {
 
   const fetchRecentPosts = async () => {
     try {
-      const res = await axiosInstance.get("/api/marketing/recent/");
+      const res = await axiosInstance.get("/api/marketing/all/");
       setRecentPosts(res.data);
     } catch (error) {
       console.error("Error fetching recent posts:", error);
@@ -44,7 +44,7 @@ const Marketing = () => {
     setResult(null);
 
     try {
-      const res = await axiosInstance.post("/api/marketing/", {
+      const res = await axiosInstance.post("/api/marketing/add", {
         prompt,
         style,
         colorTheme,

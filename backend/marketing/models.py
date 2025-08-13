@@ -11,7 +11,7 @@ class Poster(models.Model):
     format = models.CharField(max_length=50)
 
     # outputs
-    image_url = models.URLField(max_length=1000, blank=True)            # if you store externally or generate a URL
+    image = models.ImageField(upload_to="posters/", blank=True, null=True)  # stores file locally
     caption = models.TextField(blank=True)
     hashtags = models.TextField(blank=True)
     best_time = models.CharField(max_length=20, blank=True)
