@@ -1,68 +1,52 @@
+import os
+import uuid
+from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
+from asgiref.sync import async_to_sync
 
 from .models import Poster
 from .serializers import PosterSerializer
+from .services import generate_poster_image
 
 class PosterCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        serializer = PosterSerializer(data=request.data)
+        serializer = PosterSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
-            poster = serializer.save(user=request.user)
-            return Response(PosterSerializer(poster).data, status=201)
+            prompt = serializer.validated_data['prompt']
+            filename = f"poster_{request.user.id}_{uuid.uuid4().hex}.png"
+            save_path = os.path.join(settings.MEDIA_ROOT, 'generated_posters', filename)
+            os.makedirs(os.path.dirname(save_path), exist_ok=True)
+
+            async_to_sync(generate_poster_image)(prompt, save_path)
+
+            poster = Poster.objects.create(
+                user=request.user,
+                prompt=prompt,
+                image=f"generated_posters/{filename}"
+            )
+
+            return Response(PosterSerializer(poster, context={'request': request}).data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class PosterCountView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        count = Poster.objects.filter(user=request.user).count()
-        return Response({"count": count})
 
 class PosterListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        posters = Poster.objects.filter(user=request.user).order_by('-id')
-        serializer = PosterSerializer(posters, many=True)
+        posters = Poster.objects.filter(user=request.user).order_by('-created_at')
+        serializer = PosterSerializer(posters, many=True, context={'request': request})
         return Response(serializer.data)
 
-class PosterDetailView(APIView):
+class PosterDeleteView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get_object(self, pk, user):
-        return get_object_or_404(Poster, pk=pk, user=user)
-
-    def get(self, request, pk):
-        poster = self.get_object(pk, request.user)
-        serializer = PosterSerializer(poster)
-        return Response({
-            "message": "Poster fetched successfully",
-            "data": serializer.data
-        }, status=status.HTTP_200_OK)
-
-    def put(self, request, pk):
-        poster = self.get_object(pk, request.user)
-        serializer = PosterSerializer(poster, data=request.data, partial=False)
-        if serializer.is_valid():
-            updated_poster = serializer.save()
-            return Response({
-                "message": "Poster updated successfully",
-                "data": PosterSerializer(updated_poster).data
-            }, status=status.HTTP_200_OK)
-        return Response({
-            "message": "Validation failed",
-            "errors": serializer.errors
-        }, status=status.HTTP_400_BAD_REQUEST)
-
     def delete(self, request, pk):
-        poster = self.get_object(pk, request.user)
+        poster = get_object_or_404(Poster, pk=pk, user=request.user)
+        poster.image.delete(save=False)
         poster.delete()
-        return Response({
-            "message": "Poster deleted successfully"
-        }, status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "Poster deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
