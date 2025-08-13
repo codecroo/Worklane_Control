@@ -12,35 +12,41 @@ from .models import Poster
 from .serializers import PosterSerializer
 from .services import generate_poster_image
 
-
 class PosterCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        # Get original prompt (short, clean) from request
+        # Extract values
         original_prompt = request.data.get("prompt", "").strip()
+        industry = request.data.get("industry", "").strip()
+        design_style = request.data.get("design_style", "").strip()
+        tone = request.data.get("tone", "").strip()
 
         if not original_prompt:
             return Response({"error": "Prompt is required."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Prepare enhanced prompt for generation only
+        # Prepare enhanced prompt only for generation
         enhanced_prompt = (
-            original_prompt +
-            " Enhance the prompt, Enhance details, focus on clarity of any text if there is any, "
+            f"{original_prompt}. Industry: {industry}. Style: {design_style}. Tone: {tone}. "
+            "Enhance the prompt, enhance details, focus on clarity of any text if there is any, "
             "and add creative/artistic elements if necessary."
         )
 
-        # Generate image
+        # Generate file path
         filename = f"poster_{request.user.id}_{uuid.uuid4().hex}.png"
         save_path = os.path.join(settings.MEDIA_ROOT, 'generated_posters', filename)
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
 
+        # Call generator
         async_to_sync(generate_poster_image)(enhanced_prompt, save_path)
 
-        # Save only the original prompt in DB
+        # Save only original prompt & dropdown values in DB
         poster = Poster.objects.create(
             user=request.user,
             prompt=original_prompt,
+            industry=industry,
+            design_style=design_style,
+            tone=tone,
             image=f"generated_posters/{filename}"
         )
 
@@ -48,7 +54,6 @@ class PosterCreateView(APIView):
             PosterSerializer(poster, context={'request': request}).data,
             status=status.HTTP_201_CREATED
         )
-
 
 class PosterListView(APIView):
     permission_classes = [IsAuthenticated]
