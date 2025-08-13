@@ -112,79 +112,89 @@ const Marketing = () => {
       >
         {/* Left: Inputs & Dropdowns */}
         <div className="space-y-6">
-          <textarea
-            rows={4}
-            className="w-full p-4 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-white/30 backdrop-blur-md shadow-lg transition-all"
-            placeholder="Describe your poster idea..."
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            disabled={loading}
-          />
+          {/* Left: Inputs & Dropdowns */}
+          <div className="space-y-6">
+            {/* Textarea */}
+            <textarea
+              rows={4}
+              className="w-full p-4 rounded-lg bg-black/40 border border-white/20 text-white placeholder-gray-400 resize-none
+               focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300
+               hover:border-indigo-400"
+              placeholder="Describe your poster idea..."
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              disabled={loading}
+            />
 
-          {/* Dropdowns */}
-          <div className="space-y-4">
-            <div className="flex items-center bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg hover:border-indigo-500 transition-all">
-              <Briefcase className="w-5 h-5 ml-3 text-indigo-400" />
-              <select
-                className="flex-1 p-3 bg-transparent outline-none text-white cursor-pointer"
-                value={industry}
-                onChange={(e) => setIndustry(e.target.value)}
-              >
-                <option className="bg-black" value="">
-                  Select Industry
-                </option>
-                <option className="bg-black">Technology</option>
-                <option className="bg-black">Food & Beverage</option>
-                <option className="bg-black">Real Estate</option>
-                <option className="bg-black">Health & Wellness</option>
-                <option className="bg-black">Fashion & Retail</option>
-                <option className="bg-black">Education</option>
-                <option className="bg-black">Finance</option>
-              </select>
+            {/* Dropdowns */}
+            <div className="space-y-3">
+              {/* Industry */}
+              <div className="flex items-center bg-black/40 border border-white/20 rounded-md shadow-sm
+        focus-within:border-indigo-400 hover:border-indigo-400 transition-colors duration-300
+        focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-0">
+                <Briefcase className="w-4 h-4 ml-3 text-indigo-400" />
+                <select
+                  className="flex-1 px-3 py-2 bg-black/40 text-white text-sm outline-none cursor-pointer
+       focus:ring-0 transition-all duration-300"
+                  value={industry}
+                  onChange={(e) => setIndustry(e.target.value)}
+                >
+                  <option className="bg-black text-white">Select Industry</option>
+                  <option className="bg-black text-white">Technology</option>
+                  <option className="bg-black text-white">Food & Beverage</option>
+                  <option className="bg-black text-white">Real Estate</option>
+                  <option className="bg-black text-white">Health & Wellness</option>
+                  <option className="bg-black text-white">Fashion & Retail</option>
+                  <option className="bg-black text-white">Education</option>
+                  <option className="bg-black text-white">Finance</option>
+                </select>
+              </div>
+
+              {/* Design Style */}
+              <div className="flex items-center bg-black/40 border border-white/20 rounded-md shadow-sm
+        focus-within:border-indigo-400 hover:border-indigo-400 transition-colors duration-300
+        focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-0">
+                <Palette className="w-4 h-4 ml-3 text-pink-400" />
+                <select
+                  className="flex-1 px-3 py-2 bg-black/40 text-white text-sm outline-none cursor-pointer
+       focus:ring-0 transition-all duration-300"
+                  value={designStyle}
+                  onChange={(e) => setDesignStyle(e.target.value)}
+                >
+                  <option className="bg-black text-white">Select Design Style</option>
+                  <option className="bg-black text-white">Modern & Sleek</option>
+                  <option className="bg-black text-white">Minimalist & Clean</option>
+                  <option className="bg-black text-white">Bold & Attention-Grabbing</option>
+                  <option className="bg-black text-white">Corporate & Professional</option>
+                  <option className="bg-black text-white">Creative & Artistic</option>
+                </select>
+              </div>
+
+              {/* Tone / Purpose */}
+              <div className="flex items-center bg-black/40 border border-white/20 rounded-md shadow-sm
+        focus-within:border-indigo-400 hover:border-indigo-400 transition-colors duration-300
+        focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-0">
+                <Target className="w-4 h-4 ml-3 text-green-400" />
+                <select
+                  className="flex-1 px-3 py-2 bg-black/40 text-white text-sm outline-none cursor-pointer
+       focus:ring-0 transition-all duration-300"
+                  value={tone}
+                  onChange={(e) => setTone(e.target.value)}
+                >
+                  <option className="bg-black text-white">Select Purpose</option>
+                  <option className="bg-black text-white">Product Launch</option>
+                  <option className="bg-black text-white">Discount / Sale Announcement</option>
+                  <option className="bg-black text-white">Event Promotion</option>
+                  <option className="bg-black text-white">Brand Awareness</option>
+                  <option className="bg-black text-white">Recruitment / Hiring</option>
+                </select>
+              </div>
             </div>
 
-            <div className="flex items-center bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg hover:border-indigo-500 transition-all">
-              <Palette className="w-5 h-5 ml-3 text-pink-400" />
-              <select
-                className="flex-1 p-3 bg-transparent outline-none text-white cursor-pointer"
-                value={designStyle}
-                onChange={(e) => setDesignStyle(e.target.value)}
-              >
-                <option className="bg-black" value="">
-                  Select Design Style
-                </option>
-                <option className="bg-black">Modern & Sleek</option>
-                <option className="bg-black">Minimalist & Clean</option>
-                <option className="bg-black">Bold & Attention-Grabbing</option>
-                <option className="bg-black">Corporate & Professional</option>
-                <option className="bg-black">Creative & Artistic</option>
-              </select>
-            </div>
-
-            <div className="flex items-center bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg hover:border-indigo-500 transition-all">
-              <Target className="w-5 h-5 ml-3 text-green-400" />
-              <select
-                className="flex-1 p-3 bg-transparent outline-none text-white cursor-pointer"
-                value={tone}
-                onChange={(e) => setTone(e.target.value)}
-              >
-                <option className="bg-black" value="">
-                  Select Purpose
-                </option>
-                <option className="bg-black">Product Launch</option>
-                <option className="bg-black">Discount / Sale Announcement</option>
-                <option className="bg-black">Event Promotion</option>
-                <option className="bg-black">Brand Awareness</option>
-                <option className="bg-black">Recruitment / Hiring</option>
-              </select>
-            </div>
           </div>
 
-          <Button
-            className="w-full"
-            onClick={handleGenerate}
-            disabled={loading}
-          >
+
+          <Button className="w-full gap-1.5" onClick={handleGenerate}  disabled={loading}>
             {loading ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -208,7 +218,7 @@ const Marketing = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="flex items-center justify-center h-full min-h-[400px] bg-white/10 rounded-2xl"
+                className="flex items-center justify-center h-full min-h-[400px] border border-gray-700 rounded-lg"
               >
                 <Loader2 className="w-10 h-10 animate-spin text-gray-400" />
               </motion.div>
@@ -216,11 +226,11 @@ const Marketing = () => {
               <motion.div
                 key="poster"
                 layout
-                initial={{ opacity: 0, scale: 0.95 }}
+                initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
+                exit={{ opacity: 0, scale: 0.98 }}
                 transition={{ duration: 0.2 }}
-                className="rounded-2xl overflow-hidden border border-white/10 shadow-lg bg-white/10"
+                className="overflow-hidden border border-gray-700 bg-black rounded-lg shadow-sm"
               >
                 <img
                   src={result.image}
@@ -241,11 +251,11 @@ const Marketing = () => {
               <motion.div
                 key="empty"
                 layout
-                initial={{ opacity: 0, scale: 0.95 }}
+                initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
+                exit={{ opacity: 0, scale: 0.98 }}
                 transition={{ duration: 0.2 }}
-                className="flex flex-col items-center justify-center h-full min-h-[400px] bg-white/5 rounded-2xl"
+                className="flex flex-col items-center justify-center h-full min-h-[400px] border border-gray-700 rounded-lg"
               >
                 <ImageIcon className="w-10 h-10 mb-2 text-gray-500" />
                 <p className="text-gray-400 text-sm text-center px-4">
@@ -273,26 +283,29 @@ const Marketing = () => {
             variants={fadeIn}
             initial="hidden"
             animate="visible"
-            className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-6"
+            className="grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-6"
           >
             <AnimatePresence>
               {recentPosts.map((post) => (
                 <motion.div
                   key={post.id}
                   layout
-                  initial={{ opacity: 0, scale: 0.95 }}
+                  initial={{ opacity: 0, scale: 0.98 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <Card className="p-4 bg-white/10 flex flex-col border border-white/10 rounded-2xl">
-                    <img
-                      src={post.image}
-                      alt="Recent poster"
-                      className="w-full object-cover rounded-2xl mb-3 bg-white/10 max-h-60"
-                    />
-                    <p className="text-sm text-gray-300 mb-3">{post.prompt}</p>
+                  <Card className="p-4 bg-black border border-gray-700 rounded-lg flex flex-col">
+                    <div className="w-full h-[200px] overflow-hidden rounded-lg mb-3">
+                      <img
+                        src={post.image}
+                        alt="Recent poster"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <p className="text-sm text-gray-300 mb-3 truncate">{post.prompt}</p>
                     <Button
+                      className="gap-1"
                       size="sm"
                       variant="danger"
                       onClick={() => handleDeleteRecentPost(post.id)}
