@@ -1,7 +1,5 @@
-import os
 import urllib.request
 from playwright.async_api import async_playwright
-from django.conf import settings
 
 SPACE_URL = "https://parth2005147-pollinations-image-generator.hf.space"
 

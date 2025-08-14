@@ -12,6 +12,7 @@ from .models import Poster
 from .serializers import PosterSerializer
 from .services import generate_poster_image
 
+
 class PosterCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -36,9 +37,14 @@ class PosterCreateView(APIView):
         filename = f"poster_{request.user.id}_{uuid.uuid4().hex}.png"
         save_path = os.path.join(settings.MEDIA_ROOT, 'generated_posters', filename)
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        
+        try:
+            async_to_sync(generate_poster_image)(enhanced_prompt, save_path)
+        except Exception as e:
+            return Response(
+                {"error": f"Image generation failed: {str(e)}"},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        # Call generator
-        async_to_sync(generate_poster_image)(enhanced_prompt, save_path)
 
         # Save only original prompt & dropdown values in DB
         poster = Poster.objects.create(
@@ -47,13 +53,14 @@ class PosterCreateView(APIView):
             industry=industry,
             design_style=design_style,
             tone=tone,
-            image=f"generated_posters/{filename}"
+            image=f"generated_posters/{filename}",
         )
-
+        
         return Response(
             PosterSerializer(poster, context={'request': request}).data,
             status=status.HTTP_201_CREATED
         )
+
 
 class PosterListView(APIView):
     permission_classes = [IsAuthenticated]
