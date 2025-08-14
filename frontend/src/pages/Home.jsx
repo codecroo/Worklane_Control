@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../utils/axiosInstance";
 
 import {
+    LayoutGrid,
     Users,
     FolderKanban,
     CheckCircle2,
@@ -65,21 +66,27 @@ const Home = () => {
             {/* Heading */}
             <div className="px-6 pt-10 pb-6 max-w-[1440px] mx-auto">
                 {/* Heading */}
-                <motion.h1
-                    variants={typingVariants}
-                    initial="hidden"
-                    animate="visible"
-                    className="text-4xl font-bold inline-block overflow-hidden whitespace-nowrap leading-tight pb-2"
-                >
-                    Dashboard
-                </motion.h1>
+
+                <div className="flex items-center gap-3 pb-2">
+                    <LayoutGrid className="w-8 h-8" />
+                    <motion.h1
+                        variants={typingVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className="text-4xl font-bold overflow-hidden whitespace-nowrap leading-tight"
+                    >
+                        Dashboard
+                    </motion.h1>
+                </div>
+
+
                 <motion.p
                     variants={fadeIn}
                     initial="hidden"
                     animate="visible"
                     className="text-gray-400 mt-4 text-sm max-w-xl"
                 >
-                    Manage your operations, track progress, and automate marketing — all in one control center.
+                    Manage your Employees, Track progress, and watch Projects — all in one control center.
                 </motion.p>
             </div>
 

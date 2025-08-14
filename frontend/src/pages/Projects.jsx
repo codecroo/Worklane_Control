@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Pencil, Trash2, Plus, Users, Calendar, CheckCircleIcon } from "lucide-react";
+import { Pencil, Trash2, Users, Calendar, CheckCircleIcon, FolderKanban, LucideFolderPlus } from "lucide-react";
 import { typingVariants, fadeIn } from "../animation/variants";
 import { Card } from "../components/ui/Card";
 import Button from "../components/ui/Button";
@@ -68,14 +68,17 @@ const Projects = () => {
 
     return (
         <div className="min-h-screen bg-black text-white relative pb-20 px-6 pt-10 max-w-[1440px] mx-auto">
-            <motion.h1
-                variants={typingVariants}
-                initial="hidden"
-                animate="visible"
-                className="text-4xl font-bold inline-block overflow-hidden whitespace-nowrap leading-tight pb-2"
-            >
-                Projects
-            </motion.h1>
+            <div className="flex items-center gap-3 pb-2">
+                <FolderKanban className="w-8 h-8" />
+                <motion.h1
+                    variants={typingVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="text-4xl font-bold overflow-hidden whitespace-nowrap leading-tight"
+                >
+                    Projects
+                </motion.h1>
+            </div>
 
             <motion.div
                 variants={fadeIn}
@@ -94,8 +97,8 @@ const Projects = () => {
                         placeholder="Search projects..."
                         className="bg-white/10 border border-white/20 px-4 py-2 text-sm rounded-md backdrop-blur placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-300"
                     />
-                    <Button onClick={handleAdd} size="sm" className="flex items-center gap-1">
-                        <Plus className="w-4 h-4" />
+                    <Button onClick={handleAdd} size="sm" className="gap-2">
+                        <LucideFolderPlus className="w-4 h-4" />
                         Add Project
                     </Button>
                 </div>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Users, Pencil, Trash2, Plus } from "lucide-react";
+import { Pencil, Trash2,  UsersRound, User, UserPlus2, UserPlus } from "lucide-react";
 import { typingVariants, fadeIn } from "../animation/variants";
 import { Card } from "../components/ui/Card";
 import Button from "../components/ui/Button";
@@ -72,15 +72,17 @@ const Employees = () => {
 
     return (
         <div className="min-h-screen bg-black text-white relative pb-20 px-6 pt-10 max-w-[1440px] mx-auto">
-            <motion.h1
-                variants={typingVariants}
-                initial="hidden"
-                animate="visible"
-                className="text-4xl font-bold inline-block overflow-hidden whitespace-nowrap leading-tight pb-2"
-            >
-                Employees
-            </motion.h1>
-
+            <div className="flex items-center gap-3 pb-2">
+                <UsersRound className="w-8 h-8" />
+                <motion.h1
+                    variants={typingVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="text-4xl font-bold overflow-hidden whitespace-nowrap leading-tight"
+                >
+                    Employees
+                </motion.h1>
+            </div>
             <motion.div
                 variants={fadeIn}
                 initial="hidden"
@@ -101,8 +103,9 @@ const Employees = () => {
                     <Button
                         onClick={handleAdd}
                         size="sm"
+                        className="gap-2"
                     >
-                        <Plus className="w-4 h-4" />
+                        <UserPlus className="w-4 h-4" />
                         Add Employee
                     </Button>
                 </div>
@@ -129,7 +132,7 @@ const Employees = () => {
                                 <div>
                                     <div className="flex items-center gap-4 mb-4">
                                         <div className="bg-white/10 p-3 rounded-full">
-                                            <Users className="w-6 h-6 text-white" />
+                                            <User className="w-6 h-6 text-white" />
                                         </div>
                                         <div>
                                             <h3 className="font-semibold text-lg">{employee.name}</h3>

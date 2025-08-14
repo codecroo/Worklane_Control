@@ -82,14 +82,17 @@ const Marketing = () => {
   return (
     <div className="min-h-screen bg-black text-white relative pb-20 px-6 pt-10 max-w-[1440px] mx-auto">
       {/* Heading */}
-      <motion.h1
-        variants={typingVariants}
-        initial="hidden"
-        animate="visible"
-        className="text-4xl font-bold inline-block overflow-hidden whitespace-nowrap leading-tight pb-2"
-      >
-        Poster Generator
-      </motion.h1>
+      <div className="flex items-center gap-3 pb-2">
+        <Sparkles className="w-8 h-8" />
+        <motion.h1
+          variants={typingVariants}
+          initial="hidden"
+          animate="visible"
+          className="text-4xl font-bold overflow-hidden whitespace-nowrap leading-tight"
+        >
+          Poster Generator
+        </motion.h1>
+      </div>
 
       {/* Subtitle */}
       <motion.div
