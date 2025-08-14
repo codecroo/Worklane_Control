@@ -1,23 +1,33 @@
-import urllib.request
-from playwright.async_api import async_playwright
+from gradio_client import Client
+import shutil
+import os
 
-SPACE_URL = "https://parth2005147-pollinations-image-generator.hf.space"
+SPACE_ID = "Parth2005147/Pollinations-Image-Generator"
 
-async def generate_poster_image(prompt, output_path):
-    async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
-        page = await browser.new_page()
+def generate_poster_image(prompt, output_path):
+    try:
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
-        await page.goto(SPACE_URL, wait_until="domcontentloaded")
-        await page.wait_for_selector("textarea", timeout=30000)
-        await page.fill("textarea", prompt)
-        await page.click("button:has-text('Submit'), button:has-text('Generate')")
+        client = Client(SPACE_ID)
+        result = client.predict(prompt, api_name="/predict")
 
-        link_element = await page.wait_for_selector("a[href$='.png'], a[href$='.jpg'], a[href$='.jpeg']", timeout=120000)
-        img_url = await link_element.get_attribute("href")
+        # If it's a list, take the first item
+        if isinstance(result, list) and result:
+            result = result[0]
 
-        if not img_url.startswith("http"):
-            img_url = SPACE_URL.rstrip("/") + "/" + img_url.lstrip("/")
+        result = str(result)
 
-        urllib.request.urlretrieve(img_url, output_path)
-        await browser.close()
+        # If result is a local file path
+        if os.path.exists(result):
+            shutil.copy(result, output_path)
+        # If it's a URL, download it
+        elif result.startswith("http"):
+            import urllib.request
+            urllib.request.urlretrieve(result, output_path)
+        else:
+            raise ValueError(f"Unexpected result format: {result}")
+
+        return True
+
+    except Exception as e:
+        raise RuntimeError(f"Poster generation failed: {e}")

@@ -38,13 +38,7 @@ class PosterCreateView(APIView):
         save_path = os.path.join(settings.MEDIA_ROOT, 'generated_posters', filename)
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
         
-        try:
-            async_to_sync(generate_poster_image)(enhanced_prompt, save_path)
-        except Exception as e:
-            return Response(
-                {"error": f"Image generation failed: {str(e)}"},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+        generate_poster_image(enhanced_prompt, save_path)
 
         # Save only original prompt & dropdown values in DB
         poster = Poster.objects.create(
