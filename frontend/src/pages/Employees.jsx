@@ -90,7 +90,7 @@ const Employees = () => {
                 className="flex justify-between items-center mt-4 mb-8 flex-wrap gap-4"
             >
                 <p className="text-sm text-gray-400 max-w-xl">
-                    Manage all employees and assign them to different projects or teams.
+                    View and manage all employees 
                 </p>
                 <div className="flex items-center gap-3">
                     <input

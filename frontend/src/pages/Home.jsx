@@ -86,7 +86,7 @@ const Home = () => {
                     animate="visible"
                     className="text-gray-400 mt-4 text-sm max-w-xl"
                 >
-                    Manage your Employees, Track progress, and watch Projects — all in one control center.
+                    Watch on every activity, track progress, and projects — all in one control center.
                 </motion.p>
             </div>
 

@@ -102,7 +102,7 @@ const Marketing = () => {
         className="flex justify-between items-center mt-4 mb-8 flex-wrap gap-4"
       >
         <p className="text-sm text-gray-400 max-w-xl">
-          Instantly create branded posters with style and precision.
+          Create branded posters with style and precision for your company in seconds.
         </p>
       </motion.div>
 

@@ -11,6 +11,7 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('user_auth.urls')),  # your custom routes
+    # path('api/dashboard/', include('dashboard.urls')),
     path('api/employees/', include('employees.urls')),
     path('api/projects/', include('projects.urls')),
     path('api/marketing/', include('marketing.urls')),
