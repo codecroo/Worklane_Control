@@ -1,6 +1,6 @@
 // components/ProjectModal.jsx
 import { useEffect, useState } from "react";
-import { X, Calendar, Users, FileText } from "lucide-react";
+import { X, Calendar, Users, FileText, Github } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from "../components/ui/Button";
 import axiosInstance from "../utils/axiosInstance";
@@ -19,36 +19,23 @@ const modal = {
         opacity: 1,
         scale: 1,
         y: 0,
-        transition: {
-            type: "spring",
-            stiffness: 260,
-            damping: 25,
-            duration: 0.4,
-        },
+        transition: { type: "spring", stiffness: 260, damping: 25, duration: 0.4 },
     },
-    exit: {
-        opacity: 0,
-        scale: 0.9,
-        y: -20,
-        transition: { duration: 0.2, ease: "easeInOut" },
-    },
+    exit: { opacity: 0, scale: 0.9, y: -20, transition: { duration: 0.2, ease: "easeInOut" } },
 };
 
 const inputVariants = {
     hidden: { opacity: 0, y: 10 },
-    visible: (i) => ({
-        opacity: 1,
-        y: 0,
-        transition: { delay: 0.05 * i, duration: 0.25 },
-    }),
+    visible: (i) => ({ opacity: 1, y: 0, transition: { delay: 0.05 * i, duration: 0.25 } }),
 };
 
 const ProjectModal = ({ onClose, onSubmit, editingProject }) => {
     const [formData, setFormData] = useState({
         name: "",
         deadline: "",
-        employee_ids: [], // <-- renamed to employee_ids
+        employee_ids: [],
         tasks: [],
+        github_repo_url: "", // <-- added field
     });
     const [employeesList, setEmployeesList] = useState([]);
     const [newTask, setNewTask] = useState("");
@@ -69,10 +56,10 @@ const ProjectModal = ({ onClose, onSubmit, editingProject }) => {
                 name: editingProject.name || "",
                 deadline: editingProject.deadline || "",
                 employee_ids: editingProject.employees?.map((e) => e.id) || [],
-                tasks:
-                    editingProject.tasks?.map((t) =>
-                        typeof t === "string" ? { name: t, is_completed: false } : { name: t.name, is_completed: !!t.is_completed }
-                    ) || [],
+                tasks: editingProject.tasks?.map((t) =>
+                    typeof t === "string" ? { name: t, is_completed: false } : { name: t.name, is_completed: !!t.is_completed }
+                ) || [],
+                github_repo_url: editingProject.github_repo_url || "", // <-- populate when editing
             });
         }
     }, [editingProject]);
@@ -120,8 +107,7 @@ const ProjectModal = ({ onClose, onSubmit, editingProject }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Send exactly what backend expects: employee_ids and tasks with is_completed
-        onSubmit(formData);
+        onSubmit(formData); // backend expects employee_ids, tasks, github_repo_url
     };
 
     return (
@@ -140,7 +126,6 @@ const ProjectModal = ({ onClose, onSubmit, editingProject }) => {
                     animate="visible"
                     exit="exit"
                 >
-                    {/* Scrollable content wrapper */}
                     <div className="overflow-y-auto p-6 space-y-4">
                         <button
                             onClick={onClose}
@@ -153,6 +138,7 @@ const ProjectModal = ({ onClose, onSubmit, editingProject }) => {
                         <h2 className="text-xl font-semibold">{editingProject ? "Edit Project" : "Add Project"}</h2>
 
                         <form onSubmit={handleSubmit} className="space-y-4">
+
                             {/* Project Name */}
                             <motion.div className="relative w-full custom-0" custom={0} initial="hidden" animate="visible" variants={inputVariants}>
                                 <FileText size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-indigo-400 pointer-events-none" />
@@ -167,9 +153,22 @@ const ProjectModal = ({ onClose, onSubmit, editingProject }) => {
                                 />
                             </motion.div>
 
+                            {/* GitHub URL */}
+                            <motion.div className="relative w-full custom-1" custom={1} initial="hidden" animate="visible" variants={inputVariants}>
+                                <Github size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-indigo-400 pointer-events-none" />
+                                <input
+                                    name="github_repo_url"
+                                    type="url"
+                                    value={formData.github_repo_url}
+                                    onChange={handleChange}
+                                    placeholder="GitHub Repository URL (optional)"
+                                    className="w-full bg-white/10 pl-9 py-2 rounded-md border border-white/20 text-white placeholder:text-gray-300"
+                                />
+                            </motion.div>
+
                             {/* Deadline */}
                             <label htmlFor="deadline" className="block mb-1 text-gray-300">Deadline</label>
-                            <motion.div className="relative w-full custom-1" custom={1} initial="hidden" animate="visible" variants={inputVariants}>
+                            <motion.div className="relative w-full custom-2" custom={2} initial="hidden" animate="visible" variants={inputVariants}>
                                 <Calendar size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-indigo-400 pointer-events-none" />
                                 <input
                                     id="deadline"
@@ -183,7 +182,7 @@ const ProjectModal = ({ onClose, onSubmit, editingProject }) => {
                             </motion.div>
 
                             {/* Employees */}
-                            <motion.div className="flex flex-col" custom={2} initial="hidden" animate="visible" variants={inputVariants}>
+                            <motion.div className="flex flex-col" custom={3} initial="hidden" animate="visible" variants={inputVariants}>
                                 <div className="flex items-center gap-2 mb-2 text-white select-none">
                                     <Users size={16} className="text-indigo-400" />
                                     <span className="font-medium">Select Team Members</span>
@@ -214,7 +213,7 @@ const ProjectModal = ({ onClose, onSubmit, editingProject }) => {
                             </motion.div>
 
                             {/* Tasks */}
-                            <motion.div className="relative w-full" custom={3} initial="hidden" animate="visible" variants={inputVariants}>
+                            <motion.div className="relative w-full" custom={4} initial="hidden" animate="visible" variants={inputVariants}>
                                 <label className="block mb-1 text-gray-300">Tasks</label>
                                 <div className="flex gap-2">
                                     <input

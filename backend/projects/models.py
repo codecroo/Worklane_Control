@@ -9,6 +9,9 @@ class Project(models.Model):
     employees = models.ManyToManyField(Employee, related_name="project_employees", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # New field for GitHub repository
+    github_repo_url = models.URLField(blank=True, null=True)
+
     @property
     def progress(self):
         total = self.tasks.count()
@@ -19,6 +22,7 @@ class Project(models.Model):
 
     def __str__(self):
         return self.name
+
 
 
 class Task(models.Model):
