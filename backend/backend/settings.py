@@ -53,7 +53,8 @@ INSTALLED_APPS = [
     'user_auth',
     'employees',
     'projects',
-    'marketing'
+    'marketing',
+    'dashboard'
 ]
 
 
