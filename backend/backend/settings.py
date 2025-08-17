@@ -157,7 +157,8 @@ import os
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+import os
 from dotenv import load_dotenv
 
-load_dotenv()
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+load_dotenv()  # loads .env at project start
+IMGBB_API_KEY = os.getenv("IMGBB_API_KEY")

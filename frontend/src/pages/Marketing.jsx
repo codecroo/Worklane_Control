@@ -75,6 +75,13 @@ const Marketing = () => {
     }
   };
 
+  const handleDownloadImage = (url) => {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "poster.png";
+    link.click();
+  };
+
   useEffect(() => {
     fetchRecentPosts();
   }, []);
@@ -197,7 +204,7 @@ const Marketing = () => {
           </div>
 
 
-          <Button className="w-full gap-1.5" onClick={handleGenerate}  disabled={loading}>
+          <Button className="w-full gap-1.5" onClick={handleGenerate} disabled={loading}>
             {loading ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -307,15 +314,29 @@ const Marketing = () => {
                       />
                     </div>
                     <p className="text-sm text-gray-300 mb-3 truncate">{post.prompt}</p>
-                    <Button
-                      className="gap-1"
-                      size="sm"
-                      variant="danger"
-                      onClick={() => handleDeleteRecentPost(post.id)}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      Delete
-                    </Button>
+                    <div className="flex gap-2 mt-auto">
+                      <div className="flex gap-2 mt-auto">
+                        <Button
+                          className="gap-1 flex-1"
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => handleDownloadImage(post.image)}
+                        >
+                          <Download className="w-4 h-4" />
+                          Download
+                        </Button>
+
+                        <Button
+                          className="gap-1 flex-1"
+                          size="sm"
+                          variant="danger"
+                          onClick={() => handleDeleteRecentPost(post.id)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          Delete
+                        </Button>
+                      </div>
+                    </div>
                   </Card>
                 </motion.div>
               ))}
@@ -323,6 +344,7 @@ const Marketing = () => {
           </motion.div>
         </div>
       )}
+
     </div>
   );
 };
