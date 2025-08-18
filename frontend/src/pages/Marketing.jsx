@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles,
+  Eye,
+  EyeOff,
   Loader2,
   ImageIcon,
   Download,
@@ -34,12 +36,17 @@ const Marketing = () => {
   const [fbPageId, setFbPageId] = useState("");
   const [caption, setCaption] = useState("");
 
+  // toggle states
+  const [showAccessToken, setShowAccessToken] = useState(false);
+  const [showInstaId, setShowInstaId] = useState(false);
+  const [showFbPageId, setShowFbPageId] = useState(false);
+
   // Function to save credentials to backend
   const handleSaveCredentials = async () => {
     try {
-      await axiosInstance.post("/api/social/save-credentials/", {
+      await axiosInstance.post("/api/marketing/social/account/", {
         access_token: accessToken,
-        insta_id: instaId,
+        instagram_id: instaId,
         fb_page_id: fbPageId,
       });
       alert("Credentials saved successfully");
@@ -49,23 +56,53 @@ const Marketing = () => {
     }
   };
 
+  const [posting, setPosting] = useState(false);
+  const [postStatus, setPostStatus] = useState(""); // shows step/status
+
   // Function to post to social media
   const handlePost = async (platform) => {
-    if (!result?.image) return alert("Please generate a poster first.");
+    if (!result?.id) return alert("Please generate a poster first.");
+
+    const platforms =
+      platform === "both" ? ["facebook", "instagram"] : [platform];
 
     try {
-      await axiosInstance.post("/api/social/post/", {
-        platform, // "facebook" | "instagram" | "both"
-        caption,
-        image_url: result.image,
-        access_token: accessToken,
-        insta_id: instaId,
-        fb_page_id: fbPageId,
-      });
-      alert(`Posted successfully to ${platform}`);
+      setPosting(true);
+      setPostStatus("🚀 Starting post...");
+
+      const res = await axiosInstance.post(
+        `/api/marketing/social/post/${result.id}/`,
+        {
+          caption,
+          platforms,
+        }
+      );
+
+      // Smarter feedback per platform
+      let fbMsg = "";
+      let igMsg = "";
+
+      if (res.data.facebook) {
+        fbMsg = res.data.facebook.id
+          ? "✅ Facebook post successful"
+          : `❌ Facebook failed: ${res.data.facebook.error || "Unknown error"}`;
+      }
+
+      if (res.data.instagram) {
+        igMsg = res.data.instagram?.id
+          ? "Instagram ✅"
+          : res.data.instagram?.error
+            ? `Instagram ❌ ${res.data.instagram.error}\nDetails: ${JSON.stringify(res.data.instagram.details)}`
+            : "";
+
+      }
+
+      setPostStatus([fbMsg, igMsg].filter(Boolean).join("\n"));
     } catch (err) {
-      console.error(err);
-      alert(`Failed to post to ${platform}`);
+      console.error(err?.response?.data || err.message);
+      setPostStatus(`⚠️ Failed to post: ${platform}`);
+    } finally {
+      setPosting(false);
     }
   };
 
@@ -127,8 +164,20 @@ const Marketing = () => {
     link.click();
   };
 
+  const fetchCredentials = async () => {
+    try {
+      const res = await axiosInstance.get("/api/marketing/social/account/");
+      setAccessToken(res.data.access_token || "");
+      setInstaId(res.data.instagram_id || "");
+      setFbPageId(res.data.fb_page_id || "");
+    } catch (err) {
+      console.error("Failed to fetch credentials", err.response?.data || err.message);
+    }
+  };
+
   useEffect(() => {
     fetchRecentPosts();
+    fetchCredentials();
   }, []);
 
   return (
@@ -259,14 +308,67 @@ const Marketing = () => {
 
           {/* 2️⃣ Credentials */}
           <div className="p-4 space-y-3 border border-gray-700 rounded-lg bg-black/40">
-            <input type="text" placeholder="Access Token" className="w-full p-2 rounded bg-black/40 border border-gray-600 text-sm" />
-            <input type="text" placeholder="Instagram ID" className="w-full p-2 rounded bg-black/40 border border-gray-600 text-sm" />
-            <input type="text" placeholder="Facebook Page ID" className="w-full p-2 rounded bg-black/40 border border-gray-600 text-sm" />
-            <Button className="w-full gap-2">
-              <Save className="w-5 h-5" />Save Credentials</Button>
+            {/* Access Token */}
+            <div className="relative">
+              <input
+                type={showAccessToken ? "text" : "password"}
+                value={accessToken}
+                onChange={(e) => setAccessToken(e.target.value)}
+                placeholder="Access Token"
+                className="w-full p-2 pr-10 rounded bg-black/40 border border-gray-600 text-sm"
+              />
+              <button
+                type="button"
+                onClick={() => setShowAccessToken(!showAccessToken)}
+                className="absolute right-2 top-2 text-gray-400 hover:text-white"
+              >
+                {showAccessToken ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+
+            {/* Instagram ID */}
+            <div className="relative">
+              <input
+                type={showInstaId ? "text" : "password"}
+                value={instaId}
+                onChange={(e) => setInstaId(e.target.value)}
+                placeholder="Instagram ID"
+                className="w-full p-2 pr-10 rounded bg-black/40 border border-gray-600 text-sm"
+              />
+              <button
+                type="button"
+                onClick={() => setShowInstaId(!showInstaId)}
+                className="absolute right-2 top-2 text-gray-400 hover:text-white"
+              >
+                {showInstaId ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+
+            {/* Facebook Page ID */}
+            <div className="relative">
+              <input
+                type={showFbPageId ? "text" : "password"}
+                value={fbPageId}
+                onChange={(e) => setFbPageId(e.target.value)}
+                placeholder="Facebook Page ID"
+                className="w-full p-2 pr-10 rounded bg-black/40 border border-gray-600 text-sm"
+              />
+              <button
+                type="button"
+                onClick={() => setShowFbPageId(!showFbPageId)}
+                className="absolute right-2 top-2 text-gray-400 hover:text-white"
+              >
+                {showFbPageId ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+
+            <Button onClick={handleSaveCredentials} className="w-full gap-2">
+              <Save className="w-5 h-5" /> Save Credentials
+            </Button>
           </div>
 
           <div className="p-4 space-y-3 border border-gray-700 rounded-lg bg-black/40">
+            {/* Caption Box */}
             <textarea
               rows={3}
               placeholder="Write a caption..."
@@ -274,23 +376,71 @@ const Marketing = () => {
               value={caption}
               onChange={(e) => setCaption(e.target.value)}
             />
+
+            {/* Buttons */}
             <div className="flex gap-2">
-              <Button className="flex-1 gap-1" onClick={() => handlePost("facebook")}>
-                <Facebook className="w-4 h-4"></Facebook>
-                Post on Facebook
+              <Button
+                variant="secondary"
+                className="flex-1 gap-1"
+                onClick={() => handlePost("facebook")}
+                disabled={posting}
+              >
+                {posting ? (
+                  <div className="flex items-center gap-1">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Posting...
+                  </div>
+                ) : (
+                  <>
+                    <Facebook className="w-4 h-4" />
+                    Post on Facebook
+                  </>
+                )}
               </Button>
-              <Button className="flex-1 gap-1 " onClick={() => handlePost("instagram")}>
-                <Instagram className="w-4 h-4"></Instagram>
-                Post on Insta
+
+              <Button
+                variant="outline"
+                className="flex-1 gap-1"
+                onClick={() => handlePost("instagram")}
+                disabled={posting}
+              >
+                {posting ? (
+                  <div className="flex items-center gap-1">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Posting...
+                  </div>
+                ) : (
+                  <>
+                    <Instagram className="w-4 h-4" />
+                    Post on Insta
+                  </>
+                )}
               </Button>
             </div>
+
             <Button
               className="w-full"
               onClick={() => handlePost("both")}
+              disabled={posting}
             >
-              Post to Both
+              {posting ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Posting...
+                </div>
+              ) : (
+                "Post on Both"
+              )}
             </Button>
+
+            {/* Status Messages */}
+            {postStatus && (
+              <div className="mt-3 p-2 rounded bg-gray-800 text-sm whitespace-pre-line text-gray-300">
+                {postStatus}
+              </div>
+            )}
           </div>
+
         </div>
 
         {/* Poster Preview Section */}
@@ -315,9 +465,20 @@ const Marketing = () => {
                 className="w-full h-full object-contain rounded-lg shadow-md transition-all duration-300 hover:scale-[1.02]"
               />
             ) : (
-              <div className="flex flex-col items-center justify-center text-gray-500">
-                <ImageIcon className="w-10 h-10 mb-2 text-gray-600" />
-                <p className="text-sm">Your poster will appear here once generated</p>
+              <div className="flex flex-col items-center justify-center text-gray-500 h-full">
+                {loading ? (
+                  // 🔹 Show loader while generating
+                  <div className="flex flex-col items-center gap-2">
+                    <Loader2 className="w-8 h-8 animate-spin text-indigo-400" />
+                    <span className="text-sm">Generating...</span>
+                  </div>
+                ) : (
+                  // 🔹 Show placeholder when not loading
+                  <div className="flex flex-col items-center gap-2">
+                    <ImageIcon className="w-10 h-10 text-gray-600" />
+                    <p className="text-sm">Your poster will appear here once generated</p>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -326,7 +487,7 @@ const Marketing = () => {
           {result?.image && (
             <div className="p-3 border-t border-gray-800 bg-black/50">
               <Button
-                className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500"
+                className="w-full flex items-center justify-center gap-2"
                 onClick={handleDownload}
               >
                 <Download className="w-5 h-5" />
@@ -434,27 +595,25 @@ const Marketing = () => {
                       </div>
                       <p className="text-sm text-gray-300 mb-3 truncate">{post.prompt}</p>
                       <div className="flex gap-2 mt-auto">
-                        <div className="flex gap-2 mt-auto">
-                          <Button
-                            className="gap-1 flex-1"
-                            size="sm"
-                            variant="secondary"
-                            onClick={() => handleDownloadImage(post.image)}
-                          >
-                            <Download className="w-4 h-4" />
-                            Download
-                          </Button>
+                        <Button
+                          className="gap-1 flex-1"
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => handleDownloadImage(post.image)}
+                        >
+                          <Download className="w-4 h-4" />
+                          Download
+                        </Button>
 
-                          <Button
-                            className="gap-1 flex-1"
-                            size="sm"
-                            variant="danger"
-                            onClick={() => handleDeleteRecentPost(post.id)}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                            Delete
-                          </Button>
-                        </div>
+                        <Button
+                          className="gap-1 flex-1"
+                          size="sm"
+                          variant="danger"
+                          onClick={() => handleDeleteRecentPost(post.id)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          Delete
+                        </Button>
                       </div>
                     </Card>
                   </motion.div>

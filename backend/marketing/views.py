@@ -46,7 +46,9 @@ class PosterCreateView(APIView):
             design_style=design_style,
             tone=tone,
             image=f"generated_posters/{filename}",
+            caption=request.data.get("caption", "").strip(),  # ✅ save caption if provided
         )
+
         
         return Response(
             PosterSerializer(poster, context={'request': request}).data,
@@ -72,7 +74,6 @@ class PosterDeleteView(APIView):
         poster.delete()
         return Response({"message": "Poster deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
-
 class SocialAccountView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -84,35 +85,61 @@ class SocialAccountView(APIView):
         account, _ = SocialAccount.objects.get_or_create(user=request.user)
         serializer = SocialAccountSerializer(account, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.save(user=request.user)  # ✅ ensure it's tied to the current user
         return Response(serializer.data)
-
-
+    
+    
 class SocialPostView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
-        caption = request.data.get("caption", "")
-        platforms = request.data.get("platforms", [])  # ["facebook", "instagram"]
-        poster = get_object_or_404(Poster, pk=pk, user=request.user)
+        platforms_in = request.data.get("platforms") or request.data.get("platform")
+        if isinstance(platforms_in, str):
+            platforms = ["facebook", "instagram"] if platforms_in.lower() == "both" else [platforms_in.lower()]
+        elif isinstance(platforms_in, list):
+            platforms = [str(p).lower() for p in platforms_in]
+        else:
+            platforms = []
 
+        caption = request.data.get("caption", "")
+
+        if not platforms:
+            return Response({"error": "No platform(s) specified."}, status=status.HTTP_400_BAD_REQUEST)
+
+        poster = get_object_or_404(Poster, pk=pk, user=request.user)
         account = get_object_or_404(SocialAccount, user=request.user)
-        image_url = poster.public_url  # already uploaded to imgbb
+
+        # ✅ Save caption in DB
+        if caption and poster.caption != caption:
+            poster.caption = caption
+            poster.save(update_fields=["caption"])
+
+        image_url = poster.public_url
+        if not image_url:
+            return Response({"error": "Poster is not publicly accessible yet. Try again in a few seconds."},
+                            status=status.HTTP_409_CONFLICT)
 
         results = {}
-        if "facebook" in platforms and account.page_id:
-            results["facebook"] = post_to_facebook(
-                access_token=account.access_token,
-                page_id=account.page_id,
-                image_url=image_url,
-                caption=caption
-            )
-        if "instagram" in platforms and account.instagram_id:
-            results["instagram"] = post_to_instagram(
-                access_token=account.access_token,
-                instagram_id=account.instagram_id,
-                image_url=image_url,
-                caption=caption
-            )
+        if "facebook" in platforms:
+            if not account.fb_page_id:
+                results["facebook"] = {"error": "Missing fb_page_id in your SocialAccount."}
+            else:
+                results["facebook"] = post_to_facebook(
+                    access_token=account.access_token,
+                    page_id=account.fb_page_id,
+                    image_url=image_url,
+                    caption=caption,
+                )
 
-        return Response(results)
+        if "instagram" in platforms:
+            if not account.instagram_id:
+                results["instagram"] = {"error": "Missing instagram_id in your SocialAccount."}
+            else:
+                results["instagram"] = post_to_instagram(
+                    access_token=account.access_token,
+                    instagram_id=account.instagram_id,
+                    image_url=image_url,
+                    caption=caption,
+                )
+
+        return Response(results, status=status.HTTP_200_OK)

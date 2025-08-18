@@ -20,8 +20,3 @@ class SocialAccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = SocialAccount
         fields = "__all__"
-        extra_kwargs = {
-            "access_token": {"write_only": True},
-            "instagram_id":{"write_only":True},
-            "page_id":{"write_only":True},
-        }

@@ -49,7 +49,7 @@ def post_to_facebook(access_token, page_id, image_url, caption):
     except requests.exceptions.RequestException as e:
         return {"error": str(e)}
 
-
+    
 def post_to_instagram(access_token, instagram_id, image_url, caption):
     # Step 1: Create Media Container
     ig_create_url = f"https://graph.facebook.com/v17.0/{instagram_id}/media"
@@ -59,9 +59,14 @@ def post_to_instagram(access_token, instagram_id, image_url, caption):
         "access_token": access_token
     }
     res_create = requests.post(ig_create_url, data=payload_create).json()
-    creation_id = res_create.get("id")
-    if not creation_id:
-        return {"error": "Failed to create Instagram media container", "response": res_create}
+
+    if "id" not in res_create:
+        return {
+            "error": "Failed to create Instagram media container",
+            "details": res_create  # 👈 full API error here
+        }
+
+    creation_id = res_create["id"]
 
     # Step 2: Publish Media
     ig_publish_url = f"https://graph.facebook.com/v17.0/{instagram_id}/media_publish"
@@ -70,4 +75,11 @@ def post_to_instagram(access_token, instagram_id, image_url, caption):
         "access_token": access_token
     }
     res_publish = requests.post(ig_publish_url, data=payload_publish).json()
+
+    if "id" not in res_publish:
+        return {
+            "error": "Failed to publish Instagram post",
+            "details": res_publish  # 👈 also log publish error
+        }
+
     return res_publish

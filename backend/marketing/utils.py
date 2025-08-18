@@ -15,6 +15,6 @@ def upload_to_imgbb(image_path):
         data = res.json()
 
         if "data" in data:
-            return data["data"]["url"]  # permanent public link
+            return data['data']['image']['url'] # permanent public link
 
         raise Exception(f"ImgBB upload failed: {data}")

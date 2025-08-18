@@ -11,6 +11,7 @@ class Poster(models.Model):
     tone = models.CharField(max_length=100, blank=True, null=True)
     public_url = models.URLField(blank=True, null=True)  # renamed
     created_at = models.DateTimeField(auto_now_add=True, null=True)
+    caption = models.TextField(blank=True, null=True)  
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)  # save local file first
@@ -25,10 +26,9 @@ class Poster(models.Model):
 class SocialAccount(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     access_token = models.TextField()
-    page_id = models.CharField(max_length=200, blank=True, null=True)
+    fb_page_id = models.CharField(max_length=200, blank=True, null=True)
     instagram_id = models.CharField(max_length=200, blank=True, null=True)
-    caption = models.TextField(blank=True, null=True)  
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.user.username} - {self.page_id or self.instagram_id}"
+        return f"{self.user.username} - {self.fb_page_id or self.instagram_id}"
