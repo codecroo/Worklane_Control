@@ -6,12 +6,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
-from asgiref.sync import async_to_sync
 
-from .models import Poster
-from .serializers import PosterSerializer
-from .services import generate_poster_image
-
+from .services import post_to_facebook, post_to_instagram,generate_poster_image
+from .models import Poster,SocialAccount
+from .serializers import PosterSerializer,SocialAccountSerializer
 
 class PosterCreateView(APIView):
     permission_classes = [IsAuthenticated]
@@ -73,3 +71,48 @@ class PosterDeleteView(APIView):
         poster.image.delete(save=False)
         poster.delete()
         return Response({"message": "Poster deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+
+
+class SocialAccountView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        account, _ = SocialAccount.objects.get_or_create(user=request.user)
+        return Response(SocialAccountSerializer(account).data)
+
+    def post(self, request):
+        account, _ = SocialAccount.objects.get_or_create(user=request.user)
+        serializer = SocialAccountSerializer(account, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+
+class SocialPostView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        caption = request.data.get("caption", "")
+        platforms = request.data.get("platforms", [])  # ["facebook", "instagram"]
+        poster = get_object_or_404(Poster, pk=pk, user=request.user)
+
+        account = get_object_or_404(SocialAccount, user=request.user)
+        image_url = poster.public_url  # already uploaded to imgbb
+
+        results = {}
+        if "facebook" in platforms and account.page_id:
+            results["facebook"] = post_to_facebook(
+                access_token=account.access_token,
+                page_id=account.page_id,
+                image_url=image_url,
+                caption=caption
+            )
+        if "instagram" in platforms and account.instagram_id:
+            results["instagram"] = post_to_instagram(
+                access_token=account.access_token,
+                instagram_id=account.instagram_id,
+                image_url=image_url,
+                caption=caption
+            )
+
+        return Response(results)

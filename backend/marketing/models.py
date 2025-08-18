@@ -21,3 +21,14 @@ class Poster(models.Model):
 
     def __str__(self):
         return f"Poster ({self.id}) - {self.prompt[:30]}"
+
+class SocialAccount(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    access_token = models.TextField()
+    page_id = models.CharField(max_length=200, blank=True, null=True)
+    instagram_id = models.CharField(max_length=200, blank=True, null=True)
+    caption = models.TextField(blank=True, null=True)  
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.page_id or self.instagram_id}"
