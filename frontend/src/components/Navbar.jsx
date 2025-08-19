@@ -1,131 +1,184 @@
-import { useEffect, useState } from "react";
+// Navbar.jsx
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import Button from "./ui/Button";
 import { Link } from "react-router-dom";
 
-const navLinks = ["home", "features", "benefits"];
+const NAV = [
+    { id: "home", label: "Home" },
+    { id: "features", label: "Features" },
+    { id: "guide", label: "Guide" },
+];
 
-const Navbar = () => {
+export default function Navbar() {
     const [active, setActive] = useState("home");
-    const [mobileOpen, setMobileOpen] = useState(false);
+    const [open, setOpen] = useState(false);
+    const headerRef = useRef(null);
 
+    // tune this to match your header visual size
+    const HEADER_HEIGHT = 60;
+
+    // --- Scroll spy (simple & lightweight) ---
     useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        setActive(entry.target.id);
-                    }
-                });
-            },
-            {
-                threshold: 0.6,
+        const onScroll = () => {
+            if (open) return; // don't update while menu is open
+            const mid = window.scrollY + window.innerHeight / 2;
+            let current = NAV[0].id;
+            for (const n of NAV) {
+                const el = document.getElementById(n.id);
+                if (el && el.offsetTop <= mid) current = n.id;
             }
+            setActive(current);
+        };
+
+        window.addEventListener("scroll", onScroll, { passive: true });
+        onScroll(); // initialize
+        return () => window.removeEventListener("scroll", onScroll);
+    }, [open]);
+
+    // --- Body scroll lock (simple) ---
+    useEffect(() => {
+        const prev = document.body.style.overflow;
+        if (open) document.body.style.overflow = "hidden";
+        else document.body.style.overflow = prev || "";
+        return () => (document.body.style.overflow = prev || "");
+    }, [open]);
+
+    // --- Close on Escape (simple) ---
+    useEffect(() => {
+        const onKey = (e) => {
+            if (e.key === "Escape" && open) setOpen(false);
+        };
+        window.addEventListener("keydown", onKey);
+        return () => window.removeEventListener("keydown", onKey);
+    }, [open]);
+
+    // Smooth scroll accounting for fixed header
+    const goTo = (id) => {
+        const el = document.getElementById(id);
+        if (el) {
+            const headerH = headerRef.current?.offsetHeight ?? HEADER_HEIGHT;
+            const top = el.getBoundingClientRect().top + window.scrollY - headerH - 12;
+            window.scrollTo({ top, behavior: "smooth" });
+        }
+        setOpen(false);
+    };
+
+    // Mobile panel (simple portal + motion)
+    const MobilePanel = () => {
+        if (typeof document === "undefined") return null;
+        return createPortal(
+            <AnimatePresence>
+                {open && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        style={{ zIndex: 99999 }}
+                        className="fixed inset-0 bg-black/40"
+                        onClick={() => setOpen(false)}
+                    >
+                        <motion.div
+                            onClick={(e) => e.stopPropagation()}
+                            initial={{ y: -18, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            exit={{ y: -18, opacity: 0 }}
+                            transition={{ type: "spring", stiffness: 320, damping: 28, duration: 0.26 }}
+                            className="mx-auto mt-4 max-w-md w-[92%] rounded-lg bg-[#0b0b0b]/95 border border-white/8 shadow-xl p-5"
+                        >
+                            <div className="flex items-center justify-between mb-3">
+                                <div className="text-white text-lg font-semibold">Menu</div>
+                                <button onClick={() => setOpen(false)} aria-label="Close menu" className="text-white p-1 rounded hover:bg-white/5">
+                                    <X className="w-5 h-5" />
+                                </button>
+                            </div>
+
+                            <nav className="flex flex-col gap-1">
+                                {NAV.map((item) => (
+                                    <motion.button
+                                        key={item.id}
+                                        onClick={() => goTo(item.id)}
+                                        whileHover={{ scale: 1.02 }}
+                                        transition={{ duration: 0.12 }}
+                                        className={`text-left py-3 px-2 rounded-md text-base font-medium focus:outline-none ${active === item.id ? "text-blue-300" : "text-white/70 hover:text-white"
+                                            }`}
+                                    >
+                                        {item.label}
+                                    </motion.button>
+                                ))}
+                            </nav>
+
+                            <div className="mt-4 flex flex-col gap-3">
+                                <motion.div whileHover={{ scale: 1.02 }} transition={{ duration: 0.12 }}>
+                                    <Link to="/signin" onClick={() => setOpen(false)}>
+                                        <Button variant="outline" size="sm" className="w-full">Sign In</Button>
+                                    </Link>
+                                </motion.div>
+                                <motion.div whileHover={{ scale: 1.02 }} transition={{ duration: 0.12 }}>
+                                    <Link to="/signup" onClick={() => setOpen(false)}>
+                                        <Button variant="primary" size="sm" className="w-full">Sign Up</Button>
+                                    </Link>
+                                </motion.div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>,
+            document.body
         );
-
-        navLinks.forEach((link) => {
-            const el = document.getElementById(link);
-            if (el) observer.observe(el);
-        });
-
-        return () => observer.disconnect();
-    }, []);
-
-    const handleNavClick = (link) => {
-        const el = document.getElementById(link);
-        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-        setMobileOpen(false);
     };
 
     return (
-        <nav className="fixed top-0 left-0 w-full z-50 bg-black/30 backdrop-blur-lg border-b border-white/10 shadow-md">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+        <>
+            <header
+                ref={headerRef}
+                className="fixed top-0 left-0 w-full z-50 bg-black/60 backdrop-blur-sm border-b border-white/8"
+                style={{ height: HEADER_HEIGHT }}
+            >
+                <div className="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+                    {/* Bigger logo */}
+                    <div onClick={() => goTo("home")} className="cursor-pointer text-white text-3xl sm:text-2xl font-extrabold">
+                        Worklane <span className="text-blue-300">Control</span>
+                    </div>
 
-                {/* LOGO */}
-                <motion.div
-                    onClick={() => handleNavClick("home")}
-                    className="cursor-pointer text-white text-xl sm:text-2xl font-extrabold tracking-wide"
-                >
-                    Worklane{" "}
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ffffff84] to-[#ffffffb5]">
-                        Control
-                    </span>
-                </motion.div>
-
-                {/* Desktop Nav */}
-                <div className="hidden md:flex gap-8 relative">
-                    {navLinks.map((link) => (
-                        <button
-                            key={link}
-                            onClick={() => handleNavClick(link)}
-                            className={`relative text-sm font-medium transition-colors duration-300 cursor-pointer ${active === link ? "text-blue-300" : "text-white/70 hover:text-white"
-                                }`}
-                        >
-                            {link.charAt(0).toUpperCase() + link.slice(1)}
-                            {active === link && (
-                                <motion.div
-                                    layoutId="nav-underline"
-                                    className="absolute -bottom-1 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full"
-                                />
-                            )}
-                        </button>
-                    ))}
-                </div>
-
-                {/* Auth Buttons */}
-                <div className="hidden md:flex gap-3">
-                    <Link to="/signin">
-                        <Button variant="outline" size="sm">Sign In</Button>
-                    </Link>
-                    <Link to="/signup">
-                        <Button variant="primary" size="sm">Sign Up</Button>
-                    </Link>
-                </div>
-
-                {/* Mobile Menu Icon */}
-                <button
-                    className="md:hidden text-white"
-                    onClick={() => setMobileOpen(!mobileOpen)}
-                >
-                    {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-                </button>
-            </div>
-
-            {/* Mobile Menu */}
-            <AnimatePresence>
-                {mobileOpen && (
-                    <motion.div
-                        initial={{ height: 0 }}
-                        animate={{ height: "auto" }}
-                        exit={{ height: 0 }}
-                        className="md:hidden overflow-hidden px-6 pb-4"
-                    >
-                        <div className="flex flex-col gap-4">
-                            {navLinks.map((link) => (
-                                <button
-                                    key={link}
-                                    onClick={() => handleNavClick(link)}
-                                    className={`text-left text-sm font-medium transition-colors duration-300 ${active === link ? "text-blue-300" : "text-white/70 hover:text-white"
+                    {/* Center nav links */}
+                    <nav className="hidden md:flex gap-6 items-center absolute left-1/2 -translate-x-1/2">
+                        {NAV.map((n) => (
+                            <motion.button
+                                key={n.id}
+                                onClick={() => goTo(n.id)}
+                                whileHover={{ scale: 1.01 }}
+                                transition={{ duration: 0.12 }}
+                                className={`relative text-sm font-medium transition-colors px-1 ${active === n.id ? "text-blue-300" : "text-white/60 hover:text-white"
+                                    }`}
+                                aria-current={active === n.id ? "page" : undefined}
+                            >
+                                {n.label}
+                                <span
+                                    className={`block h-[1.5px] rounded-full mt-1 transition-all duration-150 ${active === n.id ? "bg-blue-300 w-full" : "bg-transparent w-0"
                                         }`}
-                                >
-                                    {link.charAt(0).toUpperCase() + link.slice(1)}
-                                </button>
-                            ))}
-                            <div className="flex flex-col gap-2 pt-2">
-                                <Link to="/SignIn">
-                                    <Button variant="outline" size="sm" className="w-full">Sign In</Button>
-                                </Link>
-                                <Link to="/SignUp">
-                                    <Button variant="primary" size="sm" className="w-full">Sign Up</Button>
-                                </Link>
-                            </div>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </nav>
-    );
-};
+                                />
+                            </motion.button>
+                        ))}
+                    </nav>
 
-export default Navbar;
+                    {/* Auth + mobile toggle */}
+                    <div className="flex items-center gap-3">
+                        <div className="hidden md:flex gap-2">
+                            <Link to="/signin"><Button variant="outline" size="sm">Sign In</Button></Link>
+                            <Link to="/signup"><Button variant="primary" size="sm">Sign Up</Button></Link>
+                        </div>
+
+                        <button className="md:hidden text-white p-2 rounded hover:bg-white/5" onClick={() => setOpen((s) => !s)} aria-expanded={open} aria-label="Toggle menu">
+                            {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            {open && <MobilePanel />}
+        </>
+    );
+}

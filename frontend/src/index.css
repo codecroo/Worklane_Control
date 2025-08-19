@@ -83,6 +83,9 @@ img {
 
 
 html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+  /* prevents navbar overlap */
   overflow-y: scroll;
 }
 
