@@ -105,7 +105,6 @@ const Marketing = () => {
     }
   };
 
-
   const fetchRecentPosts = async () => {
     try {
       const res = await axiosInstance.get("/api/marketing/all/");
@@ -180,7 +179,7 @@ const Marketing = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black text-white relative pb-20 px-6 pt-10 max-w-[1440px] mx-auto">
+    <div className="min-h-screen bg-black text-white relative pb-20 px-4 sm:px-6 pt-10 max-w-[1440px] w-full mx-auto overflow-x-hidden">
       {/* Heading */}
       <div className="flex items-center gap-3 pb-2">
         <Sparkles className="w-8 h-8" />
@@ -205,15 +204,17 @@ const Marketing = () => {
           Create branded posters with style and precision for your company in seconds.
         </p>
       </motion.div>
+
       {/* Main Layout */}
       <motion.div
         variants={fadeIn}
         initial="hidden"
         animate="visible"
-        className="grid grid-cols-2 lg:grid-cols-[400px_1fr] gap-6"
+        // mobile: single column, md: two columns, lg: keep original desktop layout
+        className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-6"
       >
         {/* Left: Inputs & Dropdowns */}
-        <div className="space-y-6">
+        <div className="space-y-6 pr-2">
           {/* Textarea */}
           <textarea
             rows={4}
@@ -377,7 +378,7 @@ const Marketing = () => {
             />
 
             {/* Buttons */}
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-col sm:flex-row">
               <Button
                 variant="secondary"
                 className="flex-1 gap-1"
@@ -456,7 +457,7 @@ const Marketing = () => {
           </div>
 
           {/* Preview Body */}
-          <div className="flex items-center justify-center bg-black/30 relative h-[495px] overflow-hidden">
+          <div className="flex items-center justify-center bg-black/30 relative h-[360px] sm:h-[420px] lg:h-[495px] overflow-hidden">
             {result?.image ? (
               <img
                 src={result.image}
@@ -464,7 +465,7 @@ const Marketing = () => {
                 className="w-full h-full object-contain rounded-lg shadow-md transition-all duration-300 hover:scale-[1.02]"
               />
             ) : (
-              <div className="flex flex-col items-center justify-center text-gray-500 h-full">
+              <div className="flex flex-col items-center justify-center text-gray-500 h-full px-6">
                 {loading ? (
                   // 🔹 Show loader while generating
                   <div className="flex flex-col items-center gap-2">
@@ -585,7 +586,7 @@ const Marketing = () => {
                     transition={{ duration: 0.2 }}
                   >
                     <Card className="p-4 bg-black border border-gray-700 rounded-lg flex flex-col">
-                      <div className="w-full h-[200px] overflow-hidden rounded-lg mb-3">
+                      <div className="w-full h-[160px] md:h-[200px] overflow-hidden rounded-lg mb-3">
                         <img
                           src={post.image}
                           alt="Recent poster"
@@ -593,7 +594,7 @@ const Marketing = () => {
                         />
                       </div>
                       <p className="text-sm text-gray-300 mb-3 truncate">{post.prompt}</p>
-                      <div className="flex gap-2 mt-auto">
+                      <div className="flex gap-2 mt-auto flex-col sm:flex-row">
                         <Button
                           className="gap-1 flex-1"
                           size="sm"
