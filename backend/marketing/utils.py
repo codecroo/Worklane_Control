@@ -1,20 +1,24 @@
-import os
-import requests
+import cloudinary
+import cloudinary.uploader
 from django.conf import settings
 
-def upload_to_imgbb(image_path):
-    api_key = settings.IMGBB_API_KEY
-    if not api_key:
-        raise Exception("IMGBB_API_KEY is not set in environment variables")
 
-    with open(image_path, "rb") as file:
-        url = "https://api.imgbb.com/1/upload"
-        payload = {"key": api_key}
-        files = {"image": file}
-        res = requests.post(url, payload, files=files)
-        data = res.json()
+def upload_to_cloudinary(image_path):
+    """
+    Uploads an image to Cloudinary and returns a secure, permanent URL.
+    """
+    cloudinary.config(
+        cloud_name=settings.CLOUDINARY["cloud_name"],
+        api_key=settings.CLOUDINARY["api_key"],
+        api_secret=settings.CLOUDINARY["api_secret"]
+    )
 
-        if "data" in data:
-            return data['data']['image']['url'] # permanent public link
+    try:
+        response = cloudinary.uploader.upload(
+            image_path,
+            resource_type="image"
+        )
+        return response.get("secure_url")  # always https:// link
 
-        raise Exception(f"ImgBB upload failed: {data}")
+    except Exception as e:
+        raise Exception(f"Cloudinary upload failed: {str(e)}")

@@ -93,7 +93,7 @@ class SocialPostView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
-        platforms_in = request.data.get("platforms") or request.data.get("platform")
+        platforms_in = request.data.get("platforms")
         if isinstance(platforms_in, str):
             platforms = ["facebook", "instagram"] if platforms_in.lower() == "both" else [platforms_in.lower()]
         elif isinstance(platforms_in, list):

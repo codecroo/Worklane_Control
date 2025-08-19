@@ -160,5 +160,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 import os
 from dotenv import load_dotenv
 
-load_dotenv()  # loads .env at project start
-IMGBB_API_KEY = os.getenv("IMGBB_API_KEY")
+load_dotenv()
+
+CLOUDINARY = {
+    "cloud_name": os.getenv("CLOUDINARY_CLOUD_NAME"),
+    "api_key": os.getenv("CLOUDINARY_API_KEY"),
+    "api_secret": os.getenv("CLOUDINARY_API_SECRET"),
+}

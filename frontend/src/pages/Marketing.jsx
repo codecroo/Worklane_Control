@@ -84,17 +84,16 @@ const Marketing = () => {
 
       if (res.data.facebook) {
         fbMsg = res.data.facebook.id
-          ? "✅ Facebook post successful"
-          : `❌ Facebook failed: ${res.data.facebook.error || "Unknown error"}`;
+          ? "✔️ Posted on facebook successfully"
+          : `Facebook failed: ${res.data.facebook.error || "Unknown error"}`;
       }
 
       if (res.data.instagram) {
         igMsg = res.data.instagram?.id
-          ? "Instagram ✅"
+          ? "✔️ Posted on instagram successfully"
           : res.data.instagram?.error
-            ? `Instagram ❌ ${res.data.instagram.error}\nDetails: ${JSON.stringify(res.data.instagram.details)}`
+            ? `Instagram failed: ${res.data.instagram.error}\nDetails: ${JSON.stringify(res.data.instagram.details)}`
             : "";
-
       }
 
       setPostStatus([fbMsg, igMsg].filter(Boolean).join("\n"));
