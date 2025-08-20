@@ -27,8 +27,7 @@ class PosterCreateView(APIView):
         # Prepare enhanced prompt only for generation
         enhanced_prompt = (
             f"{original_prompt}. Industry: {industry}. Style: {design_style}. Tone: {tone}. "
-            "Enhance the prompt, enhance details, focus on clarity of any text if there is any, "
-            "and add creative/artistic elements if necessary."
+            "Enhance the details, focus on clarity of any text, Use only ENGLISH language without grammer mistake"
         )
 
         # Generate file path

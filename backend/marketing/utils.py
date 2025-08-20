@@ -2,7 +2,6 @@ import cloudinary
 import cloudinary.uploader
 from django.conf import settings
 
-
 def upload_to_cloudinary(image_path):
     """
     Uploads an image to Cloudinary and returns a secure, permanent URL.

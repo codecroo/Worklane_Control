@@ -47,7 +47,7 @@ const Marketing = () => {
       await axiosInstance.post("/api/marketing/social/account/", {
         access_token: accessToken,
         instagram_id: instaId,
-        fb_page_id: fbPageId,
+        fb_page_id: fbPageId
       });
       alert("Credentials saved successfully");
     } catch (err) {

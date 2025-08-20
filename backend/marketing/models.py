@@ -26,7 +26,7 @@ class Poster(models.Model):
 
 class SocialAccount(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    access_token = models.TextField()
+    access_token = models.TextField(blank=True, null=True)
     fb_page_id = models.CharField(max_length=200, blank=True, null=True)
     instagram_id = models.CharField(max_length=200, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True)

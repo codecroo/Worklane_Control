@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     'employees',
     'projects',
     'marketing',
-    'dashboard'
+    'dashboard',
 ]
 
 
