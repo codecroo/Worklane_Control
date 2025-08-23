@@ -35,6 +35,12 @@ const SignIn = () => {
             return;
         }
 
+
+        if (!/[0-9]/.test(password)) {
+            setError("Password must include at least one number.");
+            return;
+        }
+
         try {
             setLoading(true);
 
@@ -58,6 +64,7 @@ const SignIn = () => {
                 setError("Invalid credentials. Please try again.");
             } else {
                 setError("Something went wrong. Please try again later.");
+                console.error(err)
             }
         }
     };

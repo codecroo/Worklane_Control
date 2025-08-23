@@ -19,7 +19,7 @@ export const fadeIn = {
     },
 };
 
-// staggered fadeIn for lists
+// fadeIn for lists
 export const staggerFade = (i = 0) => ({
     hidden: { opacity: 0, y: 20, filter: "blur(4px)" },
     visible: {

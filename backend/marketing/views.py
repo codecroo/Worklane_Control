@@ -84,7 +84,7 @@ class SocialAccountView(APIView):
         account, _ = SocialAccount.objects.get_or_create(user=request.user)
         serializer = SocialAccountSerializer(account, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
-        serializer.save(user=request.user)  # ✅ ensure it's tied to the current user
+        serializer.save(user=request.user)  #ensure it's current user
         return Response(serializer.data)
     
     
@@ -108,7 +108,7 @@ class SocialPostView(APIView):
         poster = get_object_or_404(Poster, pk=pk, user=request.user)
         account = get_object_or_404(SocialAccount, user=request.user)
 
-        # ✅ Save caption in DB
+        # Save caption in DB
         if caption and poster.caption != caption:
             poster.caption = caption
             poster.save(update_fields=["caption"])

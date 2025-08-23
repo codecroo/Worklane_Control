@@ -19,7 +19,6 @@ const useAuthCheck = () => {
 
             setLoading(false);
         };
-
         checkAuth();
     }, []);
 

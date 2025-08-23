@@ -161,8 +161,6 @@ const Projects = () => {
                                         </div>
                                     </div>
 
-
-
                                     <div className="flex items-center text-gray-400 gap-3 mb-3 text-sm">
                                         <Calendar className="w-4 h-4" />
                                         <p className="text-white">Deadline: </p><strong>{project.deadline}</strong>
@@ -184,7 +182,6 @@ const Projects = () => {
                                             />
                                         </div>
                                     </div>
-
 
 
                                     {/* Tasks */}
