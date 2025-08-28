@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Pencil, Trash2,  UsersRound, User, UserPlus2, UserPlus } from "lucide-react";
+import { Pencil, Trash2, UsersRound, User, UserPlus2, UserPlus } from "lucide-react";
 import { typingVariants, fadeIn } from "../animation/variants";
 import { Card } from "../components/ui/Card";
 import Button from "../components/ui/Button";
@@ -90,7 +90,7 @@ const Employees = () => {
                 className="flex justify-between items-center mt-4 mb-8 flex-wrap gap-4"
             >
                 <p className="text-sm text-gray-400 max-w-xl">
-                    View and manage all employees 
+                    View and manage all employees
                 </p>
                 <div className="flex items-center gap-3">
                     <input
@@ -173,6 +173,9 @@ const Employees = () => {
                 />
             )}
         </div>
+
+
+
     );
 };
 
